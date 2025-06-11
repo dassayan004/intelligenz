@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intelligenz/core/constants/color_constant.dart';
 import 'package:intelligenz/core/services/auth/cubit/auth_cubit.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -51,7 +52,7 @@ class _SplashScreenState extends State<SplashScreen> {
                       TextSpan(
                         text: 'Intelli',
                         style: GoogleFonts.secularOne(
-                          color: const Color(0xFFEC7914),
+                          color: klAccentColor,
                           fontSize: 40.88,
                           fontWeight: FontWeight.w400,
                           height: 1.2,
@@ -60,7 +61,7 @@ class _SplashScreenState extends State<SplashScreen> {
                       TextSpan(
                         text: 'genZ',
                         style: GoogleFonts.secularOne(
-                          color: const Color(0xFF46BAD9),
+                          color: klPrimaryColor,
                           fontSize: 40.88,
                           fontWeight: FontWeight.w400,
                           height: 1.2,
@@ -81,7 +82,7 @@ class _SplashScreenState extends State<SplashScreen> {
                   'by Mirasys',
                   textAlign: TextAlign.center,
                   style: GoogleFonts.secularOne(
-                    color: const Color(0xFF46BAD9),
+                    color: klPrimaryColor,
                     fontSize: 23.36,
                     fontWeight: FontWeight.w400,
                     height: 1.2,

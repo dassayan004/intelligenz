@@ -5,6 +5,7 @@ import 'package:intelligenz/core/services/auth/cubit/auth_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intelligenz/core/utils/route.dart';
+import 'package:intelligenz/core/utils/theme.dart';
 
 Future<Widget> initializeApp() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,9 +32,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp.router(
         debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        ),
+        theme: appTheme,
         routeInformationProvider: goRouter.routeInformationProvider,
         routerDelegate: goRouter.routerDelegate,
         routeInformationParser: goRouter.routeInformationParser,

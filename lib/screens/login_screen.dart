@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intelligenz/core/constants/color_constant.dart';
 import 'package:intelligenz/widgets/login_form.dart';
 
 class LoginPage extends StatelessWidget {
@@ -8,7 +9,7 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F7F9),
+      backgroundColor: klBackgroundColor,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.only(top: 66, left: 24, right: 24),
@@ -29,7 +30,7 @@ class LoginPage extends StatelessWidget {
                             TextSpan(
                               text: 'Intelli',
                               style: GoogleFonts.secularOne(
-                                color: Color(0xFFEB7813),
+                                color: klAccentColor,
                                 fontSize: 26.01,
                                 height: 0.05,
                               ),
@@ -37,7 +38,7 @@ class LoginPage extends StatelessWidget {
                             TextSpan(
                               text: 'genZ',
                               style: GoogleFonts.secularOne(
-                                color: Color(0xFF46BAD9),
+                                color: klPrimaryColor,
                                 fontSize: 26.01,
                                 height: 0.05,
                               ),
@@ -54,7 +55,7 @@ class LoginPage extends StatelessWidget {
                         'by Mirasys',
                         textAlign: TextAlign.center,
                         style: GoogleFonts.secularOne(
-                          color: Color(0xFF46BAD9),
+                          color: klPrimaryColor,
                           fontSize: 14.86,
                           height: 0.08,
                         ),

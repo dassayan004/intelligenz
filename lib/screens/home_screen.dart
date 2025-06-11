@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intelligenz/core/constants/color_constant.dart';
 import 'package:intelligenz/core/services/auth/cubit/auth_cubit.dart';
 import 'dart:io';
 
@@ -77,10 +78,11 @@ class _HomePageState extends State<HomePage> {
         return Stack(
           children: [
             Scaffold(
+              backgroundColor: klBackgroundColor,
               appBar: AppBar(
-                backgroundColor: Theme.of(context).colorScheme.inversePrimary,
                 title: Text(widget.title),
                 centerTitle: true,
+                backgroundColor: klPrimaryColor,
                 actions: [
                   IconButton(
                     icon: const Icon(Icons.logout),
@@ -103,6 +105,8 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   FloatingActionButton(
                     heroTag: 'cameraBtn',
+                    backgroundColor: kButtonColor,
+                    shape: const CircleBorder(),
                     onPressed: _openCamera,
                     tooltip: 'Open Camera',
                     child: const Icon(Icons.camera_alt),
@@ -110,6 +114,8 @@ class _HomePageState extends State<HomePage> {
                   const SizedBox(height: 10),
                   FloatingActionButton(
                     heroTag: 'videoBtn',
+                    backgroundColor: klAccentColor,
+                    shape: const CircleBorder(),
                     onPressed: _openVideo,
                     tooltip: 'Open Video',
                     child: const Icon(Icons.videocam),
