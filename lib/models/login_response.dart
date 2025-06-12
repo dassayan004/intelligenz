@@ -2,7 +2,7 @@ import 'package:intelligenz/models/user_model.dart';
 
 class LoginResponse {
   Data? data;
-  Null? errors;
+  Null errors;
 
   LoginResponse({this.data, this.errors});
 

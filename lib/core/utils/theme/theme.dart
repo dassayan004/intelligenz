@@ -29,3 +29,14 @@ final ThemeData appTheme = ThemeData(
     ),
   ),
 );
+// class TAppTheme {
+//   TAppTheme._();
+//   static ThemeData lightTheme = ThemeData(
+//     useMaterial3: true,
+//     fontFamily: GoogleFonts.dmSans().fontFamily,
+//     brightness: Brightness.light,
+//     primaryColor: klPrimaryColor,
+//     scaffoldBackgroundColor: klBackgroundColor,
+//   );
+//   static ThemeData darkTheme = ThemeData();
+// }
