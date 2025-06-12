@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intelligenz/core/constants/color_constant.dart';
+import 'package:intelligenz/core/constants/router_constant.dart';
 
 class ReusableAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String? title;
@@ -14,7 +15,16 @@ class ReusableAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   bool _canPop(BuildContext context) {
     final router = GoRouter.of(context);
-    return router.canPop();
+    final currentRouteName = ModalRoute.of(context)?.settings.name;
+
+    final noBackButtonRoutes = [
+      AppRouteName.splash.name,
+      AppRouteName.login.name,
+      AppRouteName.analytics.name,
+      AppRouteName.home.name,
+    ];
+
+    return router.canPop() && !noBackButtonRoutes.contains(currentRouteName);
   }
 
   @override
@@ -49,7 +59,7 @@ class ReusableAppBar extends StatelessWidget implements PreferredSizeWidget {
               // Left Back Button or Logo
               if (showBackButton)
                 GestureDetector(
-                  onTap: () => context.pop(),
+                  onTap: () => context.goNamed(AppRouteName.home.name),
                   child: Container(
                     width: 42,
                     height: 42,

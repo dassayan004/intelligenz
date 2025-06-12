@@ -95,7 +95,7 @@ class _HomePageState extends State<HomePage> {
               //     ),
               //   ],
               // ),
-              appBar: const ReusableAppBar(title: 'Home'),
+              appBar: const ReusableAppBar(),
               body: Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
