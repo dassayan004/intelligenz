@@ -1,28 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intelligenz/core/constants/color_constant.dart';
-import 'package:intelligenz/core/services/auth/cubit/auth_cubit.dart';
 
-class SplashScreen extends StatefulWidget {
+class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});
-
-  @override
-  State<SplashScreen> createState() => _SplashScreenState();
-}
-
-class _SplashScreenState extends State<SplashScreen> {
-  @override
-  void initState() {
-    super.initState();
-    // This updates the AuthCubit state
-    Future.delayed(const Duration(seconds: 3), () {
-      if (mounted) {
-        BlocProvider.of<AuthCubit>(context).checkAuthStatus();
-      }
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;

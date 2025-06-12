@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intelligenz/core/services/analytics/analytics_repository.dart';
+import 'package:intelligenz/core/services/analytics/cubit/analytics_cubit.dart';
 import 'package:intelligenz/core/services/auth/auth_repository.dart';
 import 'package:intelligenz/core/services/auth/cubit/auth_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -23,12 +25,17 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final authRepository = AuthRepository();
+    final analyticsRepository = AnalyticsRepository();
     final authCubit = AuthCubit(authRepository);
+    final analyticsCubit = AnalyticsCubit(analyticsRepository);
 
-    final GoRouter goRouter = router(authCubit);
+    final GoRouter goRouter = router(authCubit, analyticsCubit);
 
     return MultiBlocProvider(
-      providers: [BlocProvider<AuthCubit>.value(value: authCubit)],
+      providers: [
+        BlocProvider<AuthCubit>.value(value: authCubit),
+        BlocProvider<AnalyticsCubit>.value(value: analyticsCubit),
+      ],
       child: MaterialApp.router(
         debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',

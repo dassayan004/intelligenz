@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intelligenz/core/constants/color_constant.dart';
+import 'package:intelligenz/core/services/analytics/cubit/analytics_cubit.dart';
 import 'package:intelligenz/core/services/auth/cubit/auth_cubit.dart';
 import 'dart:io';
 
@@ -122,6 +123,21 @@ class _HomePageState extends State<HomePage> {
                     onPressed: _openVideo,
                     tooltip: 'Open Video',
                     child: const Icon(Icons.videocam),
+                  ),
+                  const SizedBox(height: 10),
+                  FloatingActionButton(
+                    heroTag: 'logoutBtn',
+                    backgroundColor: Colors.red,
+                    shape: const CircleBorder(),
+                    onPressed: () async {
+                      final authCubit = context.read<AuthCubit>();
+                      final analyticsCubit = context.read<AnalyticsCubit>();
+
+                      await analyticsCubit.clear();
+                      await authCubit.logout();
+                    },
+                    tooltip: 'Logout',
+                    child: const Icon(Icons.logout),
                   ),
                 ],
               ),

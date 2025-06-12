@@ -52,7 +52,7 @@ class TTextTheme {
     bodySmall: GoogleFonts.dmSans(
       fontSize: SizeConstants.size300,
       fontWeight: FontWeight.w500,
-      color: klTextDark.withOpacity(0.5),
+      color: klTextHint,
     ),
     labelLarge: GoogleFonts.dmSans(
       fontSize: SizeConstants.size200,
