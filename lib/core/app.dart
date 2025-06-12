@@ -32,7 +32,9 @@ class MyApp extends StatelessWidget {
       child: MaterialApp.router(
         debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
-        theme: appTheme,
+        themeMode: ThemeMode.system,
+        theme: TAppTheme.lightTheme,
+        // darkTheme: TAppTheme.darkTheme,
         routeInformationProvider: goRouter.routeInformationProvider,
         routerDelegate: goRouter.routerDelegate,
         routeInformationParser: goRouter.routeInformationParser,

@@ -5,6 +5,8 @@ import 'package:intelligenz/core/constants/color_constant.dart';
 import 'package:intelligenz/core/services/auth/cubit/auth_cubit.dart';
 import 'dart:io';
 
+import 'package:intelligenz/widgets/reusable_app_bar.dart';
+
 class HomePage extends StatefulWidget {
   const HomePage({super.key, required this.title});
 
@@ -79,20 +81,21 @@ class _HomePageState extends State<HomePage> {
           children: [
             Scaffold(
               backgroundColor: klBackgroundColor,
-              appBar: AppBar(
-                title: Text(widget.title),
-                centerTitle: true,
-                backgroundColor: klPrimaryColor,
-                actions: [
-                  IconButton(
-                    icon: const Icon(Icons.logout),
-                    tooltip: 'Logout',
-                    onPressed: () async {
-                      await BlocProvider.of<AuthCubit>(context).logout();
-                    },
-                  ),
-                ],
-              ),
+              // appBar: AppBar(
+              //   title: Text(widget.title),
+              //   centerTitle: true,
+              //   backgroundColor: klPrimaryColor,
+              //   actions: [
+              //     IconButton(
+              //       icon: const Icon(Icons.logout),
+              //       tooltip: 'Logout',
+              //       onPressed: () async {
+              //         await BlocProvider.of<AuthCubit>(context).logout();
+              //       },
+              //     ),
+              //   ],
+              // ),
+              appBar: const ReusableAppBar(title: 'Home'),
               body: Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,

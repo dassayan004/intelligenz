@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intelligenz/core/constants/color_constant.dart';
+import 'package:intelligenz/core/constants/size_constant.dart';
 import 'package:intelligenz/core/services/auth/cubit/auth_cubit.dart';
 import 'package:intelligenz/core/services/auth/login_form_controller.dart';
 
@@ -72,7 +73,7 @@ class _LoginFormState extends State<LoginForm> {
               children: [
                 Text(
                   'Login to your account',
-                  style: GoogleFonts.dmSans(color: klTextMedium, fontSize: 18),
+                  style: Theme.of(context).textTheme.headlineSmall,
                 ),
                 const SizedBox(height: 24),
 
@@ -147,7 +148,8 @@ class _LoginFormState extends State<LoginForm> {
                             'Sign in',
                             style: GoogleFonts.dmSans(
                               color: kButtonTextColor,
-                              fontSize: 18,
+                              fontWeight: FontWeight.w700,
+                              fontSize: SizeConstants.size500,
                             ),
                           ),
                   ),
