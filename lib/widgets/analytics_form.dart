@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intelligenz/core/constants/color_constant.dart';
+import 'package:intelligenz/core/constants/size_constant.dart';
 import 'package:intelligenz/core/services/analytics/cubit/analytics_cubit.dart';
+import 'package:intelligenz/core/utils/theme/radio_field_theme.dart';
 
 class AnalyticsRadioForm extends StatefulWidget {
   const AnalyticsRadioForm({super.key});
@@ -20,9 +23,7 @@ class _AnalyticsRadioFormState extends State<AnalyticsRadioForm> {
 
   void _onAnalyticsSelected(String? value) {
     debugPrint('Selected hashId: $value');
-    // Optional: if you want to update UI after debugging, uncomment below
     setState(() => _selectedHashId = value);
-    context.read<AnalyticsCubit>().selectAnalytics(value ?? '');
   }
 
   @override
@@ -42,14 +43,42 @@ class _AnalyticsRadioFormState extends State<AnalyticsRadioForm> {
                 style: Theme.of(context).textTheme.bodySmall,
               ),
               const SizedBox(height: 24),
-              ...state.analyticsList.map((analytic) {
-                return RadioListTile<String>(
-                  value: analytic.hashId ?? '',
-                  groupValue: _selectedHashId,
-                  title: Text(analytic.analyticName ?? ''),
-                  onChanged: _onAnalyticsSelected,
-                );
-              }),
+              Container(
+                height: 302,
+                decoration: BoxDecoration(
+                  color: kNeutralWhite,
+                  borderRadius: BorderRadius.circular(SizeConstants.size100),
+                ),
+                child: ListView.separated(
+                  padding: const EdgeInsets.all(16),
+                  itemCount: state.analyticsList.length,
+                  separatorBuilder: (_, __) => const SizedBox(height: 12),
+                  itemBuilder: (context, index) {
+                    final analytic = state.analyticsList[index];
+                    return CustomCupertinoRadio<String>(
+                      value: analytic.hashId ?? '',
+                      groupValue: _selectedHashId ?? '',
+                      label: analytic.analyticName ?? '',
+                      onChanged: _onAnalyticsSelected,
+                    );
+                  },
+                ),
+              ),
+
+              const SizedBox(height: 24),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: _selectedHashId == null
+                      ? null
+                      : () {
+                          context.read<AnalyticsCubit>().selectAnalytics(
+                            _selectedHashId!,
+                          );
+                        },
+                  child: const Text('Set Default Analytics'),
+                ),
+              ),
             ],
           );
         } else if (state is AnalyticsError) {

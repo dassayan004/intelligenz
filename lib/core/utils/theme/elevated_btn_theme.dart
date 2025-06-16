@@ -12,7 +12,7 @@ class TElevatedButtonTheme {
       elevation: 0,
       backgroundColor: kButtonColor,
       foregroundColor: kButtonTextColor,
-      disabledForegroundColor: kNeutralGrey700,
+      disabledForegroundColor: kButtonTextColor,
       disabledBackgroundColor: kSkyBlue300,
       side: const BorderSide(color: kButtonColor),
       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 32),
@@ -21,7 +21,9 @@ class TElevatedButtonTheme {
         color: kNeutralWhite,
         fontWeight: FontWeight.w500,
       ),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(SizeConstants.size100),
+      ),
     ),
   );
 

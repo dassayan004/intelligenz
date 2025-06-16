@@ -26,35 +26,47 @@ GoRouter router(AuthCubit authCubit, AnalyticsCubit analyticsCubit) {
       analyticsCubit.stream,
     ]),
     navigatorKey: rootNavigatorKey,
-    // redirect: (context, state) {
-    //   final isAuthenticated = authCubit.state is Authenticated;
-    //   final isUnAuthenticated = authCubit.state is Unauthenticated;
-    //   final analyticsState = analyticsCubit.state;
-    //   final isAnalyticsLoaded =
-    //       analyticsState is AnalyticsLoaded &&
-    //       analyticsState.selectedAnalytics.isNotEmpty;
+    redirect: (context, state) {
+      final isAuthenticated = authCubit.state is Authenticated;
+      final isUnAuthenticated = authCubit.state is Unauthenticated;
+      final analyticsState = analyticsCubit.state;
+      final isAnalyticsLoaded =
+          analyticsState is AnalyticsLoaded &&
+          analyticsState.selectedAnalytics.isNotEmpty;
+      final String location = state.matchedLocation;
+      // 1. Not authenticated → go to login
+      if (isUnAuthenticated && location != AppRouterConstant.login) {
+        return AppRouterConstant.login;
+      }
+      // 2. Authenticated but no analytics selected → go to analytics
+      if (isAuthenticated &&
+          !isAnalyticsLoaded &&
+          location != AppRouterConstant.analytics) {
+        return AppRouterConstant.analytics;
+      }
 
-    //   // 1. Not authenticated → go to login
-    //   if (isUnAuthenticated &&
-    //       state.matchedLocation != AppRouterConstant.login) {
-    //     return AppRouterConstant.login;
-    //   }
-    //   // 2. Authenticated but no analytics selected → go to analytics
-    //   if (isAuthenticated &&
-    //       !isAnalyticsLoaded &&
-    //       state.matchedLocation != AppRouterConstant.analytics) {
-    //     return AppRouterConstant.analytics;
-    //   }
+      // 3. Authenticated and analytics loaded → go to home if not already there
 
-    //   // 3. Authenticated and analytics loaded → go to home if not already there
-    //   if (isAuthenticated &&
-    //       isAnalyticsLoaded &&
-    //       state.matchedLocation != AppRouterConstant.home) {
-    //     return AppRouterConstant.home;
-    //   }
+      if (isAuthenticated && isAnalyticsLoaded) {
+        // allow all ShellRoute destinations
+        final shellPaths = [
+          AppRouterConstant.home,
+          AppRouterConstant.uploads,
+          AppRouterConstant.alerts,
+          AppRouterConstant.settings,
+        ];
+        if (shellPaths.contains(location)) {
+          return null;
+        }
 
-    //   return null;
-    // },
+        // If trying to go somewhere else, send to home
+        if (location != AppRouterConstant.home) {
+          return AppRouterConstant.home;
+        }
+      }
+
+      return null;
+    },
     routes: [
       GoRoute(
         path: AppRouterConstant.splash,

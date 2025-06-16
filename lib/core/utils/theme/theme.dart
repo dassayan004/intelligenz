@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:intelligenz/core/constants/color_constant.dart';
 import 'package:intelligenz/core/utils/theme/elevated_btn_theme.dart';
+import 'package:intelligenz/core/utils/theme/text_field_theme.dart';
 import 'package:intelligenz/core/utils/theme/text_theme.dart';
 
 // final ThemeData appTheme = ThemeData(
@@ -40,16 +40,8 @@ class TAppTheme {
     scaffoldBackgroundColor: klBackgroundColor,
     textTheme: TTextTheme.lightTextTheme,
     elevatedButtonTheme: TElevatedButtonTheme.lightElevatedButtonTheme,
-    inputDecorationTheme: InputDecorationTheme(
-      hintStyle: GoogleFonts.dmSans(color: klTextHint, fontSize: 14),
-      filled: true,
-      fillColor: Colors.white,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(8),
-        borderSide: BorderSide.none,
-      ),
-    ),
+    inputDecorationTheme: TTextFormFieldTheme.lightInputDecorationTheme,
+    // radioTheme: TRadioFormFieldTheme.lightRadioTheme,
   );
   static ThemeData darkTheme = ThemeData();
 }

@@ -61,8 +61,13 @@ class TTextTheme {
     ),
     labelMedium: GoogleFonts.dmSans(
       fontSize: SizeConstants.size200,
+      fontWeight: FontWeight.w500,
+      color: klTextMedium,
+    ),
+    labelSmall: GoogleFonts.dmSans(
+      fontSize: SizeConstants.size200,
       fontWeight: FontWeight.normal,
-      color: klTextDark.withOpacity(0.5),
+      color: klTextHint,
     ),
   );
 
