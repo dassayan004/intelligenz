@@ -76,7 +76,7 @@ class _AnalyticsRadioFormState extends State<AnalyticsRadioForm> {
                             _selectedHashId!,
                           );
                         },
-                  child: const Text('Set Default Analytics'),
+                  child: const Text('Continue'),
                 ),
               ),
             ],
