@@ -43,7 +43,7 @@ class Data {
     if (json['analytics_list'] != null) {
       analyticsList = <AnalyticsList>[];
       json['analytics_list'].forEach((v) {
-        analyticsList!.add(new AnalyticsList.fromJson(v));
+        analyticsList!.add(AnalyticsList.fromJson(v));
       });
     }
   }

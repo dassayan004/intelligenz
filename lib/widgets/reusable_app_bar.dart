@@ -14,17 +14,16 @@ class ReusableAppBar extends StatelessWidget implements PreferredSizeWidget {
   Size get preferredSize => const Size.fromHeight(120);
 
   bool _canPop(BuildContext context) {
-    final router = GoRouter.of(context);
-    final currentRouteName = ModalRoute.of(context)?.settings.name;
+    final location = GoRouterState.of(context).uri.toString();
 
-    final noBackButtonRoutes = [
-      AppRouteName.splash.name,
-      AppRouteName.login.name,
-      AppRouteName.analytics.name,
-      AppRouteName.home.name,
+    const noBackButtonRoutes = [
+      AppRouterConstant.splash,
+      AppRouterConstant.login,
+      AppRouterConstant.analytics,
+      AppRouterConstant.home,
     ];
 
-    return router.canPop() && !noBackButtonRoutes.contains(currentRouteName);
+    return !noBackButtonRoutes.contains(location);
   }
 
   @override
@@ -59,7 +58,9 @@ class ReusableAppBar extends StatelessWidget implements PreferredSizeWidget {
               // Left Back Button or Logo
               if (showBackButton)
                 GestureDetector(
-                  onTap: () => context.goNamed(AppRouteName.home.name),
+                  onTap: () {
+                    context.goNamed(AppRouteName.home.name);
+                  },
                   child: Container(
                     width: 42,
                     height: 42,

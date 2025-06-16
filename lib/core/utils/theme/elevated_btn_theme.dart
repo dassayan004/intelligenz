@@ -13,7 +13,7 @@ class TElevatedButtonTheme {
       backgroundColor: kButtonColor,
       foregroundColor: kButtonTextColor,
       disabledForegroundColor: kNeutralGrey700,
-      disabledBackgroundColor: kSkyBlue100,
+      disabledBackgroundColor: kSkyBlue300,
       side: const BorderSide(color: kButtonColor),
       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 32),
       textStyle: const TextStyle(
