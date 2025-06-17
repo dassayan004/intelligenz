@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intelligenz/core/constants/color_constant.dart';
 import 'package:intelligenz/core/constants/router_constant.dart';
 import 'package:intelligenz/core/services/navigation/cubit/navigation_cubit.dart';
@@ -40,6 +41,19 @@ class MainScreen extends StatelessWidget {
     context.read<NavigationCubit>().syncWithRoute(currentUri);
     return Scaffold(
       body: screen,
+      // Floating camera button
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // handle camera tap
+          debugPrint("Camera button pressed");
+        },
+        backgroundColor: kButtonColor,
+        elevation: 0,
+        hoverElevation: 0,
+        shape: const CircleBorder(),
+        child: const Icon(Icons.camera_alt, color: Colors.white),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: _buildBottomNavigation(context, tabs),
     );
   }
@@ -58,18 +72,31 @@ BlocBuilder<NavigationCubit, NavigationState> _buildBottomNavigation(
           context.go(tabs[value].initialLocation);
         }
       },
-      showSelectedLabels: false,
-      showUnselectedLabels: false,
-      // elevation: 0,
-      // backgroundColor: Colors.black,
-      // unselectedItemColor: Colors.white,
+      backgroundColor: kNeutralWhite,
+      currentIndex: state.index,
+      type: BottomNavigationBarType.fixed,
+      showSelectedLabels: true,
+      showUnselectedLabels: true,
+
+      selectedItemColor: kNeutralGrey500,
+      unselectedItemColor: kNeutralGrey700,
+
+      selectedLabelStyle: GoogleFonts.dmSans(
+        fontSize: 14,
+        fontWeight: FontWeight.w400,
+        color: kNeutralGrey500,
+      ),
+      unselectedLabelStyle: GoogleFonts.dmSans(
+        fontSize: 14,
+        fontWeight: FontWeight.w400,
+        color: kNeutralGrey500,
+      ),
+
       selectedIconTheme: IconThemeData(
         size: ((IconTheme.of(mContext).size)! * 1.3),
         color: kSkyBlue300,
       ),
       items: tabs,
-      currentIndex: state.index,
-      type: BottomNavigationBarType.fixed,
     );
   },
 );

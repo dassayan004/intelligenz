@@ -57,23 +57,32 @@ class ReusableAppBar extends StatelessWidget implements PreferredSizeWidget {
             children: [
               // Left Back Button or Logo
               if (showBackButton)
-                GestureDetector(
-                  onTap: () {
-                    context.goNamed(AppRouteName.home.name);
-                  },
-                  child: Container(
-                    width: 42,
-                    height: 42,
-                    decoration: ShapeDecoration(
-                      color: Colors.white,
-                      shape: RoundedRectangleBorder(
+                MouseRegion(
+                  cursor: SystemMouseCursors.click,
+                  child: GestureDetector(
+                    onTap: () {
+                      context.goNamed(AppRouteName.home.name);
+                    },
+                    child: Container(
+                      width: 42,
+                      height: 42,
+                      decoration: BoxDecoration(
+                        color: kNeutralWhite,
                         borderRadius: BorderRadius.circular(8),
+                        boxShadow: [
+                          BoxShadow(
+                            color: kNeutralBlack.withAlpha(25),
+                            blurRadius: 10,
+                            offset: Offset(0, 0),
+                            spreadRadius: 0,
+                          ),
+                        ],
                       ),
-                    ),
-                    child: const Icon(
-                      Icons.arrow_back_ios_new,
-                      color: Color(0xFFD6D8DB),
-                      size: 20,
+                      child: const Icon(
+                        Icons.arrow_back_ios_new,
+                        color: kNeutralGrey900,
+                        size: 20,
+                      ),
                     ),
                   ),
                 )
@@ -124,7 +133,7 @@ class ReusableAppBar extends StatelessWidget implements PreferredSizeWidget {
 
               // Right Text (default or custom)
               SizedBox(
-                width: 100,
+                width: 140,
                 child: Text(
                   title ?? "Next Gen\nAI Analytics",
                   textAlign: TextAlign.right,
