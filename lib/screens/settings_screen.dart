@@ -38,7 +38,7 @@ class SettingScreen extends StatelessWidget {
             if (isLoading)
               Positioned.fill(
                 child: Container(
-                  color: kNeutralBlack.withAlpha(127),
+                  color: kNeutralBlack.withAlpha(128),
                   child: const Center(
                     child: CircularProgressIndicator(color: kNeutralWhite),
                   ),

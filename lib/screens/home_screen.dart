@@ -131,7 +131,7 @@ class _HomePageState extends State<HomePage> {
             if (isLoading)
               Positioned.fill(
                 child: Container(
-                  color: Colors.black.withOpacity(0.5),
+                  color: kNeutralBlack.withAlpha(128),
                   child: const Center(
                     child: CircularProgressIndicator(color: Colors.white),
                   ),
