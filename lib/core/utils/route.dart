@@ -83,11 +83,6 @@ GoRouter router(AuthCubit authCubit, AnalyticsCubit analyticsCubit) {
         name: AppRouteName.analytics.name,
         builder: (context, state) => const AnalyticsPage(),
       ),
-      // GoRoute(
-      //   path: AppRouterConstant.home,
-      //   name: AppRouteName.home.name,
-      //   builder: (context, state) => const HomePage(title: 'Home'),
-      // ),
       ShellRoute(
         navigatorKey: shellNavigatorKey,
         builder: (context, state, child) {
