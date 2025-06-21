@@ -57,49 +57,61 @@ class MainScreen extends StatelessWidget {
       bottomNavigationBar: BlocBuilder<NavigationCubit, NavigationState>(
         buildWhen: (previous, current) => previous.index != current.index,
         builder: (context, state) {
-          return BottomAppBar(
-            color: kNeutralWhite,
-            height: 76,
-            padding: const EdgeInsets.only(bottom: 2),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                // Left side
-                _buildNavItem(
-                  context,
-                  state.index,
-                  0,
-                  Icons.home_outlined,
-                  Icons.home,
-                  'Home',
-                ),
-                _buildNavItem(
-                  context,
-                  state.index,
-                  1,
-                  Icons.upload_outlined,
-                  Icons.upload,
-                  'Uploads',
-                  showDot: true,
-                ),
-                const SizedBox(width: 50), // Spacer to center the FAB
-                _buildNavItem(
-                  context,
-                  state.index,
-                  2,
-                  Icons.add_alert_outlined,
-                  Icons.add_alert_sharp,
-                  'Alerts',
-                ),
-                _buildNavItem(
-                  context,
-                  state.index,
-                  3,
-                  Icons.settings_outlined,
-                  Icons.settings,
-                  'Settings',
+          return Container(
+            decoration: BoxDecoration(
+              boxShadow: [
+                BoxShadow(
+                  color: kNeutralBlack.withAlpha((0.12 * 255).round()),
+                  blurRadius: 10,
+                  offset: const Offset(0, 0), // X: 0, Y: 0
+                  spreadRadius: 0,
                 ),
               ],
+            ),
+            child: BottomAppBar(
+              color: kNeutralWhite,
+              height: 76,
+              padding: const EdgeInsets.only(bottom: 2),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  // Left side
+                  _buildNavItem(
+                    context,
+                    state.index,
+                    0,
+                    Icons.home_outlined,
+                    Icons.home,
+                    'Home',
+                  ),
+                  _buildNavItem(
+                    context,
+                    state.index,
+                    1,
+                    Icons.upload_outlined,
+                    Icons.upload,
+                    'Uploads',
+                    showDot: true,
+                  ),
+                  const SizedBox(width: 50), // Spacer to center the FAB
+                  _buildNavItem(
+                    context,
+                    state.index,
+                    2,
+                    Icons.add_alert_outlined,
+                    Icons.add_alert_sharp,
+                    'Alerts',
+                  ),
+                  _buildNavItem(
+                    context,
+                    state.index,
+                    3,
+                    Icons.settings_outlined,
+                    Icons.settings,
+                    'Settings',
+                  ),
+                ],
+              ),
             ),
           );
         },
