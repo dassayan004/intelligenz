@@ -2,8 +2,8 @@ import 'package:dio/dio.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intelligenz/core/constants/hive_constants.dart';
 import 'package:intelligenz/db/auth/auth_model.dart';
-import 'package:pretty_dio_logger/pretty_dio_logger.dart';
-import 'package:flutter/foundation.dart';
+// import 'package:pretty_dio_logger/pretty_dio_logger.dart';
+// import 'package:flutter/foundation.dart';
 
 class DioProvider {
   static final DioProvider _instance = DioProvider._internal();
