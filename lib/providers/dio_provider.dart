@@ -41,9 +41,9 @@ class DioProvider {
       ),
     );
 
-    if (kDebugMode) {
-      dio.interceptors.add(PrettyDioLogger());
-    }
+    // if (kDebugMode) {
+    //   dio.interceptors.add(PrettyDioLogger());
+    // }
 
     _dio = dio;
     return _dio!;

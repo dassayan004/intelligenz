@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -6,8 +7,10 @@ import 'package:intelligenz/core/constants/router_constant.dart';
 import 'package:intelligenz/core/constants/size_constant.dart';
 import 'package:intelligenz/core/services/alerts/cubit/alert_cubit.dart';
 import 'package:intelligenz/core/services/analytics/cubit/analytics_cubit.dart';
+import 'package:intelligenz/core/utils/image_fetch_util.dart';
 
 import 'package:intelligenz/models/alert_response.dart';
+import 'package:intelligenz/providers/dio_provider.dart';
 import 'package:shimmer/shimmer.dart';
 
 class RecentAlertsCard extends StatelessWidget {
@@ -134,25 +137,8 @@ class RecentAlertRow extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Image
-        ClipRRect(
-          borderRadius: BorderRadius.circular(SizeConstants.size100),
-          child: Image.network(
-            alert.imageUrl?[0] ?? '',
-            width: SizeConstants.size1100,
-            height: SizeConstants.size1100,
-            fit: BoxFit.cover,
-            errorBuilder: (_, __, ___) => Container(
-              width: SizeConstants.size1100,
-              height: SizeConstants.size1100,
-              color: kNeutralGrey1000,
-              child: const Icon(
-                Icons.image_not_supported,
-                size: 24,
-                color: kNeutralGrey300,
-              ),
-            ),
-          ),
-        ),
+        AlertImage(fileName: alert.imageUrl?[0], size: SizeConstants.size1100),
+
         const SizedBox(width: 12),
 
         // Text Section
@@ -165,14 +151,14 @@ class RecentAlertRow extends StatelessWidget {
                 children: [
                   Expanded(
                     child: Text(
-                      alert.cameraName ?? 'IMG XXXXXXXX.png',
+                      truncateFilename(alert.imageUrl?[0] ?? 'IMG_XXXXXX.png'),
                       style: Theme.of(context).textTheme.bodyLarge,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
                   Text(
-                    alert.analyticType ?? 'Traffic',
+                    alert.zoneName ?? 'Traffic',
                     style: Theme.of(
                       context,
                     ).textTheme.bodyLarge?.copyWith(color: kSkyBlue300),
@@ -201,6 +187,18 @@ class RecentAlertRow extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  String truncateFilename(
+    String filename, {
+    int headLength = 8,
+    int tailLength = 10,
+  }) {
+    if (filename.length <= headLength + tailLength) return filename;
+
+    final head = filename.substring(0, headLength);
+    final tail = filename.substring(filename.length - tailLength);
+    return '$head...$tail';
   }
 
   String _formatDate(String? timestamp) {
@@ -291,5 +289,76 @@ class _RecentAlertSkeleton extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class AlertImage extends StatelessWidget {
+  final String? fileName;
+  final double size;
+
+  const AlertImage({
+    super.key,
+    required this.fileName,
+    this.size = 100, // fallback size
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(SizeConstants.size100),
+      child: FutureBuilder<Uint8List?>(
+        future: _loadImage(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState != ConnectionState.done) {
+            return _imgSkeleton();
+          }
+
+          if (snapshot.hasData && snapshot.data != null) {
+            return Image.memory(
+              snapshot.data!,
+              width: size,
+              height: size,
+              fit: BoxFit.cover,
+            );
+          }
+
+          return _placeholder();
+        },
+      ),
+    );
+  }
+
+  Widget _placeholder() {
+    return Container(
+      width: size,
+      height: size,
+      color: kNeutralGrey1000,
+      child: const Icon(
+        Icons.image_not_supported,
+        size: 24,
+        color: kNeutralGrey300,
+      ),
+    );
+  }
+
+  Widget _imgSkeleton() {
+    return Shimmer.fromColors(
+      baseColor: kNeutralGrey1000,
+      highlightColor: kNeutralGrey900,
+      child: Container(
+        width: SizeConstants.size1100,
+        height: SizeConstants.size1100,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(SizeConstants.size100),
+        ),
+      ),
+    );
+  }
+
+  Future<Uint8List?> _loadImage() async {
+    if (fileName == null || fileName!.isEmpty) return null;
+    final dio = await DioProvider().client;
+    return await ImageFetchUtil.fetchImage(fileName!, dio);
   }
 }
