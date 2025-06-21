@@ -70,7 +70,10 @@ class RecentAlertsCard extends StatelessWidget {
                     child: Column(
                       children: List.generate(
                         3,
-                        (index) => const _RecentAlertSkeleton(),
+                        (index) => Padding(
+                          padding: EdgeInsets.only(bottom: index == 2 ? 0 : 16),
+                          child: const _RecentAlertSkeleton(),
+                        ),
                       ),
                     ),
                   ),
@@ -223,71 +226,68 @@ class _RecentAlertSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Shimmer.fromColors(
-            baseColor: kNeutralGrey1000,
-            highlightColor: kNeutralGrey900,
-            child: Container(
-              width: SizeConstants.size1100,
-              height: SizeConstants.size1100,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(SizeConstants.size100),
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Shimmer.fromColors(
+          baseColor: kNeutralGrey1000,
+          highlightColor: kNeutralGrey900,
+          child: Container(
+            width: SizeConstants.size1100,
+            height: SizeConstants.size1100,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(SizeConstants.size100),
+            ),
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Shimmer.fromColors(
+                baseColor: kNeutralGrey1000,
+                highlightColor: kNeutralGrey900,
+                child: Container(
+                  height: 14,
+                  width: double.infinity,
+                  margin: const EdgeInsets.only(bottom: 6),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                ),
               ),
-            ),
+              Shimmer.fromColors(
+                baseColor: kNeutralGrey1000,
+                highlightColor: kNeutralGrey900,
+                child: Container(
+                  height: 12,
+                  width: double.infinity,
+                  margin: const EdgeInsets.only(bottom: 4),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                ),
+              ),
+              Shimmer.fromColors(
+                baseColor: kNeutralGrey1000,
+                highlightColor: kNeutralGrey900,
+                child: Container(
+                  height: 10,
+                  width: 100,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                ),
+              ),
+            ],
           ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Shimmer.fromColors(
-                  baseColor: kNeutralGrey1000,
-                  highlightColor: kNeutralGrey900,
-                  child: Container(
-                    height: 14,
-                    width: double.infinity,
-                    margin: const EdgeInsets.only(bottom: 6),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                  ),
-                ),
-                Shimmer.fromColors(
-                  baseColor: kNeutralGrey1000,
-                  highlightColor: kNeutralGrey900,
-                  child: Container(
-                    height: 12,
-                    width: double.infinity,
-                    margin: const EdgeInsets.only(bottom: 4),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                  ),
-                ),
-                Shimmer.fromColors(
-                  baseColor: kNeutralGrey1000,
-                  highlightColor: kNeutralGrey900,
-                  child: Container(
-                    height: 12,
-                    width: 100,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
