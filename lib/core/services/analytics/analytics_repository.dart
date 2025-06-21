@@ -1,13 +1,16 @@
-import 'package:intelligenz/core/services/data/secure_storage_service.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:intelligenz/core/constants/hive_constants.dart';
+import 'package:intelligenz/db/analytics/analytics_model.dart';
 import 'package:intelligenz/models/analytics_response.dart';
 import 'package:intelligenz/providers/dio_provider.dart';
 
 class AnalyticsRepository {
-  static const _key = 'hash_id';
-  final SecureStorageService _storageService = SecureStorageService();
+  final Box<AnalyticsModel> _analyticsBox = Hive.box<AnalyticsModel>(
+    analyticsBox,
+  );
 
-  Future<void> setHashId(String id) async {
-    await _storageService.save(_key, id);
+  Future<void> setSelectedAnalytics(AnalyticsModel model) async {
+    await _analyticsBox.put(selectedAnalyticsKey, model);
   }
 
   Future<List<AnalyticsList>> getAnalytics() async {
@@ -22,16 +25,26 @@ class AnalyticsRepository {
     }
   }
 
-  Future<bool> isHashSaved() async {
-    final token = await _storageService.read(_key);
-    return token != null && token.isNotEmpty;
+  Future<bool> isAnalyticsSelected() async {
+    return _analyticsBox.containsKey(selectedAnalyticsKey);
   }
 
-  Future<String?> getHashId() async {
-    return await _storageService.read(_key);
+  Future<AnalyticsModel?> getSelectedAnalytics() async {
+    return _analyticsBox.get(selectedAnalyticsKey);
   }
 
-  Future<void> clearHashId() async {
-    await _storageService.delete(_key);
+  /// Just the hashId (if needed)
+  Future<String?> getSelectedHashId() async {
+    return _analyticsBox.get(selectedAnalyticsKey)?.hashId;
+  }
+
+  /// Just the name (if needed)
+  Future<String?> getSelectedAnalyticsName() async {
+    return _analyticsBox.get(selectedAnalyticsKey)?.analyticsName;
+  }
+
+  /// Clear selected analytic
+  Future<void> clearSelectedAnalytics() async {
+    await _analyticsBox.delete(selectedAnalyticsKey);
   }
 }

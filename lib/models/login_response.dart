@@ -1,4 +1,4 @@
-import 'package:intelligenz/models/user_model.dart';
+import 'package:intelligenz/db/user/user_model.dart';
 
 class LoginResponse {
   Data? data;

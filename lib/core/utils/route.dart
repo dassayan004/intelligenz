@@ -32,7 +32,7 @@ GoRouter router(AuthCubit authCubit, AnalyticsCubit analyticsCubit) {
       final analyticsState = analyticsCubit.state;
       final isAnalyticsLoaded =
           analyticsState is AnalyticsLoaded &&
-          analyticsState.selectedAnalytics.isNotEmpty;
+          analyticsState.selectedAnalytics.isInBox;
       final String location = state.matchedLocation;
       // 1. Not authenticated → go to login
       if (isUnAuthenticated && location != AppRouterConstant.login) {
@@ -101,7 +101,7 @@ GoRouter router(AuthCubit authCubit, AnalyticsCubit analyticsCubit) {
             path: AppRouterConstant.home,
             name: AppRouteName.home.name,
             pageBuilder: (context, state) =>
-                const NoTransitionPage(child: HomePage(title: 'Home')),
+                const NoTransitionPage(child: HomeScreen()),
           ),
           GoRoute(
             path: AppRouterConstant.uploads,

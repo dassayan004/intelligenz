@@ -4,6 +4,7 @@ import 'package:intelligenz/core/constants/color_constant.dart';
 import 'package:intelligenz/core/constants/size_constant.dart';
 import 'package:intelligenz/core/services/analytics/cubit/analytics_cubit.dart';
 import 'package:intelligenz/core/utils/theme/radio_field_theme.dart';
+import 'package:intelligenz/models/analytics_response.dart';
 
 class AnalyticsRadioForm extends StatefulWidget {
   const AnalyticsRadioForm({super.key});
@@ -13,7 +14,7 @@ class AnalyticsRadioForm extends StatefulWidget {
 }
 
 class _AnalyticsRadioFormState extends State<AnalyticsRadioForm> {
-  String? _selectedHashId;
+  AnalyticsList? _selectedAnalytic;
 
   @override
   void initState() {
@@ -21,9 +22,9 @@ class _AnalyticsRadioFormState extends State<AnalyticsRadioForm> {
     context.read<AnalyticsCubit>().fetchAnalyticsList();
   }
 
-  void _onAnalyticsSelected(String? value) {
-    debugPrint('Selected hashId: $value');
-    setState(() => _selectedHashId = value);
+  void _onAnalyticsSelected(AnalyticsList analytic) {
+    debugPrint('Selected: ${analytic.hashId} - ${analytic.analyticName}');
+    setState(() => _selectedAnalytic = analytic);
   }
 
   @override
@@ -57,9 +58,9 @@ class _AnalyticsRadioFormState extends State<AnalyticsRadioForm> {
                     final analytic = state.analyticsList[index];
                     return CustomCupertinoRadio<String>(
                       value: analytic.hashId ?? '',
-                      groupValue: _selectedHashId ?? '',
+                      groupValue: _selectedAnalytic?.hashId ?? '',
                       label: analytic.analyticName ?? '',
-                      onChanged: _onAnalyticsSelected,
+                      onChanged: (_) => _onAnalyticsSelected(analytic),
                     );
                   },
                 ),
@@ -69,11 +70,11 @@ class _AnalyticsRadioFormState extends State<AnalyticsRadioForm> {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: _selectedHashId == null
+                  onPressed: _selectedAnalytic == null
                       ? null
                       : () {
                           context.read<AnalyticsCubit>().selectAnalytics(
-                            _selectedHashId!,
+                            _selectedAnalytic!,
                           );
                         },
                   child: const Text('Continue'),

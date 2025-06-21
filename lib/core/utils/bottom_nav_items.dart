@@ -1,1 +1,0 @@
-enum BottomNavItems { home, settings }
