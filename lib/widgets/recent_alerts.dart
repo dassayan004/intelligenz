@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -7,10 +6,9 @@ import 'package:intelligenz/core/constants/router_constant.dart';
 import 'package:intelligenz/core/constants/size_constant.dart';
 import 'package:intelligenz/core/services/alerts/cubit/alert_cubit.dart';
 import 'package:intelligenz/core/services/analytics/cubit/analytics_cubit.dart';
-import 'package:intelligenz/core/utils/image_fetch_util.dart';
 
 import 'package:intelligenz/models/alert_response.dart';
-import 'package:intelligenz/providers/dio_provider.dart';
+import 'package:intelligenz/widgets/alert_thumb.dart';
 import 'package:shimmer/shimmer.dart';
 
 class RecentAlertsCard extends StatelessWidget {
@@ -59,63 +57,9 @@ class RecentAlertsCard extends StatelessWidget {
           BlocBuilder<AlertCubit, AlertState>(
             builder: (context, state) {
               if (state is AlertLoading) {
-                return Card(
-                  elevation: 0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  color: kNeutralWhite,
-                  child: Padding(
-                    padding: const EdgeInsets.all(12),
-                    child: Column(
-                      children: List.generate(
-                        3,
-                        (index) => Padding(
-                          padding: EdgeInsets.only(bottom: index == 2 ? 0 : 16),
-                          child: const _RecentAlertSkeleton(),
-                        ),
-                      ),
-                    ),
-                  ),
-                );
+                return _buildLoadingCard();
               } else if (state is AlertLoaded) {
-                final List<AlertData> alerts = state.alerts;
-                if (alerts.isEmpty) {
-                  return const Text("No recent alerts found.");
-                }
-                alerts.sort((a, b) {
-                  final aTs = int.tryParse(a.timestamp ?? '0') ?? 0;
-                  final bTs = int.tryParse(b.timestamp ?? '0') ?? 0;
-                  return bTs.compareTo(aTs); // Descending
-                });
-
-                final topAlerts = alerts.take(3).toList();
-                return Card(
-                  elevation: 0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  color: kNeutralWhite,
-                  child: Padding(
-                    padding: const EdgeInsets.all(12),
-                    child: Column(
-                      children: topAlerts
-                          .asMap()
-                          .entries
-                          .map(
-                            (entry) => Padding(
-                              padding: EdgeInsets.only(
-                                bottom: entry.key == topAlerts.length - 1
-                                    ? 0
-                                    : 16,
-                              ),
-                              child: RecentAlertRow(alert: entry.value),
-                            ),
-                          )
-                          .toList(),
-                    ),
-                  ),
-                );
+                return _buildAlertCard(state.alerts, context: context);
               } else if (state is AlertError) {
                 return Text("Failed to load alerts: ${state.message}");
               }
@@ -129,6 +73,73 @@ class RecentAlertsCard extends StatelessWidget {
   }
 }
 
+Widget _buildLoadingCard() {
+  return Card(
+    elevation: 0,
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+    color: kNeutralWhite,
+    child: Padding(
+      padding: const EdgeInsets.all(12),
+      child: Column(
+        children: List.generate(
+          3,
+          (index) => Padding(
+            padding: EdgeInsets.only(bottom: index == 2 ? 0 : 16),
+            child: const _RecentAlertSkeleton(),
+          ),
+        ),
+      ),
+    ),
+  );
+}
+
+Widget _buildAlertCard(
+  List<AlertData> alerts, {
+  required BuildContext context,
+}) {
+  if (alerts.isEmpty) return const Text("No recent alerts found.");
+  alerts.sort((a, b) {
+    final aTs = int.tryParse(a.timestamp ?? '0') ?? 0;
+    final bTs = int.tryParse(b.timestamp ?? '0') ?? 0;
+    return bTs.compareTo(aTs); // Descending
+  });
+
+  final topAlerts = alerts.take(3).toList();
+  return Card(
+    elevation: 0,
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+    color: kNeutralWhite,
+    child: Padding(
+      padding: const EdgeInsets.all(12),
+      child: Column(
+        children: topAlerts
+            .asMap()
+            .entries
+            .map(
+              (entry) => Padding(
+                padding: EdgeInsets.only(
+                  bottom: entry.key == topAlerts.length - 1 ? 0 : 16,
+                ),
+                child: MouseRegion(
+                  cursor: SystemMouseCursors.click,
+                  child: GestureDetector(
+                    onTap: () {
+                      context.pushNamed(
+                        AppRouteName.alertDetails.name,
+                        extra: entry.value,
+                      );
+                    },
+                    child: RecentAlertRow(alert: entry.value),
+                  ),
+                ),
+              ),
+            )
+            .toList(),
+      ),
+    ),
+  );
+}
+
 class RecentAlertRow extends StatelessWidget {
   final AlertData alert;
 
@@ -140,7 +151,10 @@ class RecentAlertRow extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Image
-        AlertImage(fileName: alert.imageUrl?[0], size: SizeConstants.size1100),
+        AlertThumbnail(
+          fileName: alert.thumbUrl?[0],
+          size: SizeConstants.size1100,
+        ),
 
         const SizedBox(width: 12),
 
@@ -289,76 +303,5 @@ class _RecentAlertSkeleton extends StatelessWidget {
         ),
       ],
     );
-  }
-}
-
-class AlertImage extends StatelessWidget {
-  final String? fileName;
-  final double size;
-
-  const AlertImage({
-    super.key,
-    required this.fileName,
-    this.size = 100, // fallback size
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(SizeConstants.size100),
-      child: FutureBuilder<Uint8List?>(
-        future: _loadImage(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState != ConnectionState.done) {
-            return _imgSkeleton();
-          }
-
-          if (snapshot.hasData && snapshot.data != null) {
-            return Image.memory(
-              snapshot.data!,
-              width: size,
-              height: size,
-              fit: BoxFit.cover,
-            );
-          }
-
-          return _placeholder();
-        },
-      ),
-    );
-  }
-
-  Widget _placeholder() {
-    return Container(
-      width: size,
-      height: size,
-      color: kNeutralGrey1000,
-      child: const Icon(
-        Icons.image_not_supported,
-        size: 24,
-        color: kNeutralGrey300,
-      ),
-    );
-  }
-
-  Widget _imgSkeleton() {
-    return Shimmer.fromColors(
-      baseColor: kNeutralGrey1000,
-      highlightColor: kNeutralGrey900,
-      child: Container(
-        width: SizeConstants.size1100,
-        height: SizeConstants.size1100,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(SizeConstants.size100),
-        ),
-      ),
-    );
-  }
-
-  Future<Uint8List?> _loadImage() async {
-    if (fileName == null || fileName!.isEmpty) return null;
-    final dio = await DioProvider().client;
-    return await ImageFetchUtil.fetchImage(fileName!, dio);
   }
 }

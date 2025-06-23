@@ -7,6 +7,7 @@ class AppRouterConstant {
   static const String home = '/home';
   static const String uploads = '/uploads';
   static const String alerts = '/alerts';
+  static const String alertDetails = '/alertDetails';
   static const String settings = '/settings';
 }
 
@@ -18,5 +19,6 @@ enum AppRouteName {
   home,
   uploads,
   alerts,
+  alertDetails,
   settings,
 }

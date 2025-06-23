@@ -16,7 +16,6 @@ class AlertsScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: const [
-                // DefaultAnalyticsCard(),
                 AlertsCard(),
                 SizedBox(height: 36),
               ],

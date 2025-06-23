@@ -16,6 +16,9 @@ import 'package:intelligenz/screens/settings_screen.dart';
 import 'package:intelligenz/screens/splash_screen.dart';
 import 'package:intelligenz/screens/upload_screen.dart';
 
+import '../../models/alert_response.dart';
+import '../../screens/alert_details_screen.dart';
+
 GoRouter router(AuthCubit authCubit, AnalyticsCubit analyticsCubit) {
   final rootNavigatorKey = GlobalKey<NavigatorState>();
   final shellNavigatorKey = GlobalKey<NavigatorState>();
@@ -55,14 +58,10 @@ GoRouter router(AuthCubit authCubit, AnalyticsCubit analyticsCubit) {
           AppRouterConstant.alerts,
           AppRouterConstant.settings,
         ];
-        if (shellPaths.contains(location)) {
-          return null;
-        }
-
-        // If trying to go somewhere else, send to home
-        if (location != AppRouterConstant.home) {
-          return AppRouterConstant.home;
-        }
+        final isAllowed = shellPaths.any(
+          (prefix) => location.startsWith(prefix),
+        );
+        if (!isAllowed) return AppRouterConstant.home;
       }
 
       return null;
@@ -109,6 +108,18 @@ GoRouter router(AuthCubit authCubit, AnalyticsCubit analyticsCubit) {
             name: AppRouteName.alerts.name,
             pageBuilder: (context, state) =>
                 const NoTransitionPage(child: AlertsScreen()),
+            routes: [
+              GoRoute(
+                path: AppRouterConstant.alertDetails,
+                name: AppRouteName.alertDetails.name,
+                pageBuilder: (context, state) {
+                  final alert = state.extra as AlertData;
+                  return NoTransitionPage(
+                    child: AlertDetailsScreen(alert: alert),
+                  );
+                },
+              ),
+            ],
           ),
           GoRoute(
             path: AppRouterConstant.settings,
