@@ -35,7 +35,7 @@ class AlertImage extends StatelessWidget {
               snapshot.data!,
               width: width,
               height: height,
-              fit: BoxFit.cover,
+              fit: BoxFit.fill,
             );
           }
 
