@@ -41,13 +41,17 @@ GoRouter router(AuthCubit authCubit, AnalyticsCubit analyticsCubit) {
       if (isUnAuthenticated && location != AppRouterConstant.login) {
         return AppRouterConstant.login;
       }
-      // 2. Authenticated but no analytics selected → go to analytics
+
+      final shouldForceAnalyticsSelection =
+          analyticsState is AnalyticsInitial ||
+          (analyticsState is! AnalyticsLoaded &&
+              analyticsState is! AnalyticsListLoaded);
+
       if (isAuthenticated &&
-          !isAnalyticsLoaded &&
+          shouldForceAnalyticsSelection &&
           location != AppRouterConstant.analytics) {
         return AppRouterConstant.analytics;
       }
-
       // 3. Authenticated and analytics loaded → go to home if not already there
 
       if (isAuthenticated && isAnalyticsLoaded) {

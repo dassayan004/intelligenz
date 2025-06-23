@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intelligenz/core/constants/color_constant.dart';
 import 'package:intelligenz/core/services/analytics/cubit/analytics_cubit.dart';
 import 'package:intelligenz/core/services/auth/cubit/auth_cubit.dart';
+import 'package:intelligenz/widgets/change_analytics_card.dart';
 import 'package:intelligenz/widgets/reusable_app_bar.dart';
 
 class SettingScreen extends StatelessWidget {
@@ -17,7 +18,13 @@ class SettingScreen extends StatelessWidget {
           children: [
             Scaffold(
               appBar: const ReusableAppBar(title: "Application Settings"),
-              body: Center(child: Text('Settings Screen')),
+              body: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: const [ChangeAnalyticsCard()],
+                ),
+              ),
               floatingActionButton: FloatingActionButton(
                 heroTag: 'logoutBtn',
                 backgroundColor: kErrorColor,
