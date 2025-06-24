@@ -3,6 +3,9 @@ class AppRouterConstant {
   static const String login = '/login';
   static const String register = '/register';
   static const String analytics = '/analytics';
+
+  static const String uploadNewItems = '/upload-new-items';
+
   // shell route
   static const String home = '/home';
   static const String uploads = '/uploads';
@@ -16,6 +19,9 @@ enum AppRouteName {
   login,
   register,
   analytics,
+  uploadNewItems,
+
+  // shell route
   home,
   uploads,
   alerts,

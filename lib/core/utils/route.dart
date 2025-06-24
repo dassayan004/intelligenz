@@ -14,6 +14,7 @@ import 'package:intelligenz/screens/login_screen.dart';
 import 'package:intelligenz/screens/main_screen.dart';
 import 'package:intelligenz/screens/settings_screen.dart';
 import 'package:intelligenz/screens/splash_screen.dart';
+import 'package:intelligenz/screens/upload_new_screen.dart';
 import 'package:intelligenz/screens/upload_screen.dart';
 
 import '../../models/alert_response.dart';
@@ -65,7 +66,9 @@ GoRouter router(AuthCubit authCubit, AnalyticsCubit analyticsCubit) {
         final isAllowed = shellPaths.any(
           (prefix) => location.startsWith(prefix),
         );
-        if (!isAllowed) return AppRouterConstant.home;
+        if (!isAllowed && location != AppRouterConstant.uploadNewItems) {
+          return AppRouterConstant.home;
+        }
       }
 
       return null;
@@ -86,6 +89,8 @@ GoRouter router(AuthCubit authCubit, AnalyticsCubit analyticsCubit) {
         name: AppRouteName.analytics.name,
         builder: (context, state) => const AnalyticsPage(),
       ),
+
+      /// [Authenticated] Shell
       ShellRoute(
         navigatorKey: shellNavigatorKey,
         builder: (context, state, child) {
@@ -133,19 +138,32 @@ GoRouter router(AuthCubit authCubit, AnalyticsCubit analyticsCubit) {
           ),
         ],
       ),
+
+      /// ✅ Upload New Items [Authenticated] OUTSIDE SHELL
+      GoRoute(
+        path: AppRouterConstant.uploadNewItems,
+        name: AppRouteName.uploadNewItems.name,
+        builder: (context, state) {
+          final imagePath = state.extra as String?;
+          return UploadNewScreen(imagePath: imagePath!);
+          //     return BlocProvider(
+          //       create: (_) => UploadFormCubit()..addImage(imagePath!),
+          //       child: const UploadNewItemsScreen(),
+          //     );
+        },
+      ),
     ],
   );
 }
 
-// for convert stream to listenable
-
+/// 🌀 Converts Stream to Listenable for GoRouter refresh
 class GoRouterRefreshStream extends ChangeNotifier {
   GoRouterRefreshStream(List<Stream> streams) {
     for (var stream in streams) {
       final sub = stream.listen((_) => notifyListeners());
       _subscriptions.add(sub);
     }
-    notifyListeners(); // trigger once at init
+    notifyListeners();
   }
 
   final List<StreamSubscription> _subscriptions = [];

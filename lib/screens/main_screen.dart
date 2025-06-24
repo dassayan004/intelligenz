@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intelligenz/core/constants/color_constant.dart';
 import 'package:intelligenz/core/constants/router_constant.dart';
 import 'package:intelligenz/core/services/navigation/cubit/navigation_cubit.dart';
@@ -29,9 +30,23 @@ class MainScreen extends StatelessWidget {
               width: 70,
               height: 70,
               child: FloatingActionButton(
-                onPressed: () {
-                  debugPrint("Camera button pressed");
+                onPressed: () async {
+                  final picker = ImagePicker();
+                  final XFile? image = await picker.pickImage(
+                    source: ImageSource.camera,
+                  );
+
+                  if (!context.mounted) return;
+
+                  if (image != null) {
+                    context.pushNamed(
+                      AppRouteName.uploadNewItems.name,
+                      extra: image.path,
+                    );
+                    debugPrint('Image tulche: ${image.path}');
+                  }
                 },
+
                 backgroundColor: kButtonColor,
                 elevation: 0,
                 shape: const CircleBorder(),

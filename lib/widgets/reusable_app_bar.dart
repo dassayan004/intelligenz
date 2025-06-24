@@ -61,7 +61,12 @@ class ReusableAppBar extends StatelessWidget implements PreferredSizeWidget {
                   cursor: SystemMouseCursors.click,
                   child: GestureDetector(
                     onTap: () {
-                      context.goNamed(AppRouteName.home.name);
+                      if (context.canPop()) {
+                        context
+                            .pop(); // ✅ go back to previous screen in GoRouter
+                      } else {
+                        context.goNamed(AppRouteName.home.name);
+                      }
                     },
                     child: Container(
                       width: 42,
