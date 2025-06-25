@@ -26,3 +26,8 @@ Future<void> pickImageWithLocation(BuildContext context) async {
     }
   }
 }
+
+String getFileType(String path) {
+  final extension = path.split('.').last.toLowerCase();
+  return ['mp4', 'mov', 'avi'].contains(extension) ? 'video' : 'image';
+}

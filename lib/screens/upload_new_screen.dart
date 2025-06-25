@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:intelligenz/core/constants/router_constant.dart';
 import 'package:intelligenz/core/constants/size_constant.dart';
 import 'package:intelligenz/core/services/analytics/cubit/analytics_cubit.dart';
+import 'package:intelligenz/core/services/upload/cubit/upload_cubit.dart';
 import 'package:intelligenz/core/services/uploadForm/cubit/upload_form_cubit.dart';
 import 'package:intelligenz/core/utils/pick_image_geo.dart';
 import 'package:intelligenz/core/utils/theme/elevated_btn_theme.dart';
@@ -157,18 +160,16 @@ class ActionButtons extends StatelessWidget {
                         .state;
 
                     if (analyticsCubitState is AnalyticsLoaded) {
-                      final payloadList = state.imagesData.map((image) {
-                        return {
-                          'image': image.path,
-                          'location': image.location.toJson(),
-                          'timestamp': image.timestamp.toIso8601String(),
-                          'analyticsHashId':
-                              analyticsCubitState.selectedAnalytics.hashId,
-                          'description': state.description,
-                        };
-                      }).toList();
+                      final uploadCubit = context.read<UploadCubit>();
 
-                      debugPrint("📦 Payload List: $payloadList");
+                      // Await submission
+                      await uploadCubit.submitUpload(
+                        state,
+                        analyticsCubitState.selectedAnalytics.hashId,
+                      );
+                      if (context.mounted) {
+                        context.goNamed(AppRouteName.uploads.name);
+                      }
                     } else {
                       debugPrint(
                         "⚠️ Analytics not loaded. Submission skipped or handled differently.",

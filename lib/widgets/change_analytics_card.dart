@@ -170,7 +170,7 @@ Widget _analyticsSkeletonList(BuildContext context) {
       height: 302,
       child: ListView.separated(
         padding: const EdgeInsets.all(16),
-        itemCount: 6,
+        itemCount: 5,
         separatorBuilder: (_, __) => const SizedBox(height: 12),
         itemBuilder: (context, index) {
           return Shimmer.fromColors(
