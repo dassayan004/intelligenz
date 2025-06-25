@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intelligenz/core/constants/asset_path.dart';
 import 'package:intelligenz/core/constants/color_constant.dart';
 import 'package:intelligenz/core/constants/router_constant.dart';
 import 'package:intelligenz/core/services/navigation/cubit/navigation_cubit.dart';
@@ -95,16 +97,16 @@ class MainScreen extends StatelessWidget {
                     context,
                     state.index,
                     0,
-                    Icons.home_outlined,
-                    Icons.home,
+                    homeIcon,
+                    homeIconActive,
                     'Home',
                   ),
                   _buildNavItem(
                     context,
                     state.index,
                     1,
-                    Icons.upload_outlined,
-                    Icons.upload,
+                    upload,
+                    uploadActive,
                     'Uploads',
                     showDot: true,
                   ),
@@ -113,16 +115,16 @@ class MainScreen extends StatelessWidget {
                     context,
                     state.index,
                     2,
-                    Icons.add_alert_outlined,
-                    Icons.add_alert_sharp,
+                    alerts,
+                    alertsActive,
                     'Alerts',
                   ),
                   _buildNavItem(
                     context,
                     state.index,
                     3,
-                    Icons.settings_outlined,
-                    Icons.settings,
+                    settings,
+                    settingsActive,
                     'Settings',
                   ),
                 ],
@@ -138,13 +140,12 @@ class MainScreen extends StatelessWidget {
     BuildContext context,
     int selectedIndex,
     int itemIndex,
-    IconData icon,
-    IconData selectedIcon,
+    String icon,
+    String selectedIcon,
     String label, {
     bool showDot = false,
   }) {
     final isSelected = selectedIndex == itemIndex;
-    final color = isSelected ? kSkyBlue300 : kNeutralGrey700;
     final iconRef = isSelected ? selectedIcon : icon;
     return InkWell(
       onTap: () {
@@ -166,7 +167,7 @@ class MainScreen extends StatelessWidget {
           children: [
             Stack(
               children: [
-                Icon(iconRef, color: color, size: 24),
+                SvgPicture.asset(iconRef, width: 24, height: 24),
                 if (showDot)
                   Positioned(
                     right: 0,

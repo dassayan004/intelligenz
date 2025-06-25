@@ -77,6 +77,12 @@ flutter:
   assets:
       - assets/icons/home_active.svg
       - assets/icons/home_inactive.svg
+      - assets/icons/alert.svg
+      - assets/icons/alert_active.svg
+      - assets/icons/upload.svg
+      - assets/icons/upload_active.svg
+      - assets/icons/settings_active.svg
+      - assets/icons/settings.svg
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 
