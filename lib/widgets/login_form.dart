@@ -51,6 +51,7 @@ class _LoginFormState extends State<LoginForm> {
             SnackBar(
               content: const Text('Login successful!'),
               backgroundColor: kSuccessColor,
+              duration: const Duration(seconds: 2),
             ),
           );
         } else if (state is AuthError) {
@@ -58,6 +59,7 @@ class _LoginFormState extends State<LoginForm> {
             SnackBar(
               content: Text(state.message),
               backgroundColor: kErrorColor,
+              duration: const Duration(seconds: 2),
             ),
           );
         }

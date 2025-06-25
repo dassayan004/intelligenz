@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intelligenz/core/constants/color_constant.dart';
 import 'package:intelligenz/core/services/upload/cubit/upload_cubit.dart';
 import 'package:intelligenz/core/services/upload/cubit/upload_state.dart';
+import 'package:intelligenz/core/utils/theme/refresh_indicator.dart';
 import 'package:intelligenz/db/upload/upload_model.dart';
 
 import 'package:intelligenz/widgets/reusable_app_bar.dart';
@@ -27,50 +28,66 @@ class _UploadScreenState extends State<UploadScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const ReusableAppBar(title: "Your Upload History"),
-      body: BlocBuilder<UploadCubit, UploadState>(
-        builder: (context, state) {
-          if (state is UploadListLoaded) {
-            if (state.uploads.isEmpty) {
-              return const Center(child: Text("No uploads found."));
-            }
-
-            return RefreshIndicator(
-              onRefresh: () async {
-                context.read<UploadCubit>().fetchAllUploads();
-              },
-              child: ListView.builder(
-                padding: const EdgeInsets.all(16),
-                itemCount: state.uploads.length,
-                itemBuilder: (context, index) {
-                  final upload = state.uploads[index];
-                  final jsonString = const JsonEncoder.withIndent(
-                    '  ',
-                  ).convert(upload.toJson());
-
-                  return GestureDetector(
-                    onTap: () => showUploadDetailsModal(context, upload),
-                    child: Card(
-                      margin: const EdgeInsets.only(bottom: 16),
-                      child: Padding(
-                        padding: const EdgeInsets.all(12),
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Text(jsonString),
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              ),
-            );
-          } else if (state is UploadInProgress) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (state is UploadFailure) {
-            return Center(child: Text("❌ ${state.error}"));
-          } else {
-            return const Center(child: Text("Loading uploads..."));
+      body: BlocListener<UploadCubit, UploadState>(
+        listenWhen: (previous, current) => current is UploadSuccess,
+        listener: (context, state) {
+          if (state is UploadSuccess) {
+            context.read<UploadCubit>().fetchAllUploads();
           }
         },
+        child: BlocBuilder<UploadCubit, UploadState>(
+          buildWhen: (previous, current) =>
+              current is UploadListLoaded ||
+              current is UploadInProgress ||
+              current is UploadFailure,
+          builder: (context, state) {
+            if (state is UploadListLoaded) {
+              if (state.uploads.isEmpty) {
+                return const Center(child: Text("No uploads found."));
+              }
+
+              return TRefreshIndicator(
+                onRefresh: () async {
+                  context.read<UploadCubit>().fetchAllUploads();
+                },
+                child: ListView.builder(
+                  padding: const EdgeInsets.all(16),
+                  itemCount: state.uploads.length,
+                  itemBuilder: (context, index) {
+                    final upload = state.uploads[index];
+                    final jsonString = const JsonEncoder.withIndent(
+                      '  ',
+                    ).convert(upload.toJson());
+
+                    return GestureDetector(
+                      onTap: () => showUploadDetailsModal(context, upload),
+                      child: Card(
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        color: kNeutralWhite,
+                        child: Padding(
+                          padding: const EdgeInsets.all(12),
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Text(jsonString),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              );
+            } else if (state is UploadInProgress) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (state is UploadFailure) {
+              return Center(child: Text("❌ ${state.error}"));
+            } else {
+              return const Center(child: Text("Loading uploads..."));
+            }
+          },
+        ),
       ),
     );
   }
