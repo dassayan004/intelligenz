@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intelligenz/core/constants/color_constant.dart';
 import 'package:intelligenz/core/utils/theme/elevated_btn_theme.dart';
+import 'package:intelligenz/core/utils/theme/outline_btn_theme.dart';
 import 'package:intelligenz/core/utils/theme/text_field_theme.dart';
 import 'package:intelligenz/core/utils/theme/text_theme.dart';
 
@@ -40,6 +41,7 @@ class TAppTheme {
     scaffoldBackgroundColor: klBackgroundColor,
     textTheme: TTextTheme.lightTextTheme,
     elevatedButtonTheme: TElevatedButtonTheme.lightElevatedButtonTheme,
+    outlinedButtonTheme: TOutlineButtonTheme.lightOutlineButtonTheme,
     inputDecorationTheme: TTextFormFieldTheme.lightInputDecorationTheme,
     // radioTheme: TRadioFormFieldTheme.lightRadioTheme,
   );

@@ -7,6 +7,7 @@ import 'package:intelligenz/core/constants/router_constant.dart';
 import 'package:intelligenz/core/services/analytics/cubit/analytics_cubit.dart';
 import 'package:intelligenz/core/services/auth/cubit/auth_cubit.dart';
 import 'package:intelligenz/core/services/navigation/cubit/navigation_cubit.dart';
+import 'package:intelligenz/core/services/uploadForm/cubit/upload_form_cubit.dart';
 import 'package:intelligenz/screens/alerts_screen.dart';
 import 'package:intelligenz/screens/analytics_screen.dart';
 import 'package:intelligenz/screens/home_screen.dart';
@@ -145,11 +146,10 @@ GoRouter router(AuthCubit authCubit, AnalyticsCubit analyticsCubit) {
         name: AppRouteName.uploadNewItems.name,
         builder: (context, state) {
           final imagePath = state.extra as String?;
-          return UploadNewScreen(imagePath: imagePath!);
-          //     return BlocProvider(
-          //       create: (_) => UploadFormCubit()..addImage(imagePath!),
-          //       child: const UploadNewItemsScreen(),
-          //     );
+          return BlocProvider(
+            create: (_) => UploadFormCubit(),
+            child: UploadNewScreen(imagePath: imagePath!),
+          );
         },
       ),
     ],

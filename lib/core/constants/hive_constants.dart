@@ -2,6 +2,7 @@
 const String authBox = 'authBox';
 const String metaBox = 'metaBox';
 const String analyticsBox = 'analyticsBox';
+const String uploadBox = 'uploadBox';
 
 /// [authBox] Keys
 const String authKey = 'auth'; // Stores the entire AuthModel
