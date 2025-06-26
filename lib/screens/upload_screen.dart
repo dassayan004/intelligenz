@@ -271,8 +271,8 @@ Widget _buildStatusIndicator(BuildContext context, UploadModel upload) {
           children: [
             CircularProgressIndicator(
               strokeWidth: 4,
-              backgroundColor: Colors.grey.shade300,
-              valueColor: const AlwaysStoppedAnimation<Color>(kWarningColor),
+              backgroundColor: kNeutralGrey1000,
+              valueColor: const AlwaysStoppedAnimation<Color>(kSunsetOrange500),
             ),
           ],
         ),
@@ -306,7 +306,7 @@ Widget _buildStatusIndicator(BuildContext context, UploadModel upload) {
           height: 48,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: kErrorColor.withOpacity(0.1),
+            color: kSunsetOrange1000,
             border: Border.all(color: kErrorColor, width: 3),
           ),
           alignment: Alignment.center,
