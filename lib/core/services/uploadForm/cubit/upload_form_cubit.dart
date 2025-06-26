@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:intelligenz/core/services/permission_service.dart';
 
 part 'upload_form_state.dart';
 
@@ -24,19 +25,17 @@ class UploadFormCubit extends Cubit<UploadFormState> {
   }
 
   Future<bool> addImageAndFetchLocation(String path) async {
+    final hasPermission = await ensureLocationPermission();
+
+    if (!hasPermission) return false;
     try {
-      final permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.always ||
-          permission == LocationPermission.whileInUse) {
-        final position = await Geolocator.getCurrentPosition();
-        final latLong = LatLong(
-          latitude: position.latitude,
-          longitude: position.longitude,
-        );
-        addImageWithLocation(path, latLong);
-        return true;
-      }
-      return false;
+      final position = await Geolocator.getCurrentPosition();
+      final latLong = LatLong(
+        latitude: position.latitude,
+        longitude: position.longitude,
+      );
+      addImageWithLocation(path, latLong);
+      return true;
     } catch (e) {
       return false;
     }

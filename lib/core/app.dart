@@ -10,6 +10,7 @@ import 'package:intelligenz/core/services/auth/auth_repository.dart';
 import 'package:intelligenz/core/services/auth/cubit/auth_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intelligenz/core/services/permission_service.dart';
 import 'package:intelligenz/core/services/upload/cubit/upload_cubit.dart';
 import 'package:intelligenz/core/services/upload/upload_repository.dart';
 import 'package:intelligenz/core/utils/route.dart';
@@ -25,6 +26,8 @@ Future<Widget> initializeApp() async {
     GoogleFonts.dmSans(),
     GoogleFonts.secularOne(),
   ]);
+
+  await PermissionService().requestNecessaryPermissions();
 
   // local phone storage
   await Hive.initFlutter();

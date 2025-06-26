@@ -49,8 +49,7 @@ class _DefaultAnalyticsCardState extends State<DefaultAnalyticsCard> {
                     child: ElevatedButton(
                       style: TElevatedButtonTheme.btnInsideInput,
                       onPressed: () {
-                        context.read<AnalyticsCubit>().clear();
-                        context.goNamed(AppRouteName.analytics.name);
+                        context.goNamed(AppRouteName.settings.name);
                       },
                       child: const Text("Change"),
                     ),
