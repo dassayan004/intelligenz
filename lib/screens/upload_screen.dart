@@ -1,10 +1,11 @@
 import 'dart:io';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:intelligenz/core/constants/hive_constants.dart';
 import 'package:path/path.dart' as p;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intelligenz/core/constants/color_constant.dart';
 import 'package:intelligenz/core/services/upload/cubit/upload_cubit.dart';
-import 'package:intelligenz/core/services/upload/cubit/upload_state.dart';
 import 'package:intelligenz/core/utils/theme/refresh_indicator.dart';
 import 'package:intelligenz/db/upload/upload_model.dart';
 import 'package:intelligenz/models/upload_response.dart';
@@ -31,45 +32,24 @@ class _UploadScreenState extends State<UploadScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const ReusableAppBar(title: "Your Upload History"),
-      body: BlocListener<UploadCubit, UploadState>(
-        listenWhen: (previous, current) => current is UploadSuccess,
-        listener: (context, state) {
-          if (state is UploadSuccess) {
-            context.read<UploadCubit>().fetchAllUploads();
+      body: ValueListenableBuilder(
+        valueListenable: Hive.box<UploadModel>(uploadBox).listenable(),
+        builder: (context, Box<UploadModel> box, _) {
+          final uploads = box.values.toList();
+          if (uploads.isEmpty) {
+            return const Center(child: Text("No uploads found."));
           }
-        },
-        child: BlocBuilder<UploadCubit, UploadState>(
-          buildWhen: (previous, current) =>
-              current is UploadListLoaded ||
-              current is UploadInProgress ||
-              current is UploadFailure,
-          builder: (context, state) {
-            if (state is UploadListLoaded) {
-              if (state.uploads.isEmpty) {
-                return const Center(child: Text("No uploads found."));
-              }
 
-              return TRefreshIndicator(
-                onRefresh: () async {
-                  context.read<UploadCubit>().fetchAllUploads();
-                },
-                child: ListView(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                  shrinkWrap: true,
-                  physics:
-                      const AlwaysScrollableScrollPhysics(), // to allow pull even if not scrollable
-                  children: [_buildUploadCard(state.uploads, context: context)],
-                ),
-              );
-            } else if (state is UploadInProgress) {
-              return const Center(child: CircularProgressIndicator());
-            } else if (state is UploadFailure) {
-              return Center(child: Text("❌ ${state.error}"));
-            } else {
-              return const Center(child: Text("Loading uploads..."));
-            }
-          },
-        ),
+          return TRefreshIndicator(
+            onRefresh: () async {
+              context.read<UploadCubit>().fetchAllUploads();
+            },
+            child: ListView(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              children: [_buildUploadCard(uploads, context: context)],
+            ),
+          );
+        },
       ),
     );
   }
@@ -224,7 +204,7 @@ class RecentUploadRow extends StatelessWidget {
         ),
 
         // Circular Progress (dummy 75% for now)
-        _buildStatusIndicator(context, upload.status),
+        _buildStatusIndicator(context, upload),
       ],
     );
   }
@@ -280,8 +260,8 @@ class RecentUploadRow extends StatelessWidget {
   }
 }
 
-Widget _buildStatusIndicator(BuildContext context, UploadStatus status) {
-  switch (status) {
+Widget _buildStatusIndicator(BuildContext context, UploadModel upload) {
+  switch (upload.status) {
     case UploadStatus.uploading:
       return SizedBox(
         width: 48,
@@ -290,14 +270,9 @@ Widget _buildStatusIndicator(BuildContext context, UploadStatus status) {
           alignment: Alignment.center,
           children: [
             CircularProgressIndicator(
-              value: 0.75, // Replace with actual progress if available
               strokeWidth: 4,
               backgroundColor: Colors.grey.shade300,
               valueColor: const AlwaysStoppedAnimation<Color>(kWarningColor),
-            ),
-            Text(
-              '75%', // You can also use dynamic percentage
-              style: Theme.of(context).textTheme.labelSmall,
             ),
           ],
         ),
@@ -322,20 +297,25 @@ Widget _buildStatusIndicator(BuildContext context, UploadStatus status) {
       );
 
     case UploadStatus.failed:
-      return Container(
-        width: 48,
-        height: 48,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: kErrorColor.withOpacity(0.1),
-          border: Border.all(color: kErrorColor, width: 3),
-        ),
-        alignment: Alignment.center,
-        child: Text(
-          'Retry',
-          style: Theme.of(context).textTheme.labelSmall?.copyWith(
-            color: kErrorColor,
-            fontWeight: FontWeight.bold,
+      return GestureDetector(
+        onTap: () {
+          context.read<UploadCubit>().retryUpload(upload.key as int);
+        },
+        child: Container(
+          width: 48,
+          height: 48,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: kErrorColor.withOpacity(0.1),
+            border: Border.all(color: kErrorColor, width: 3),
+          ),
+          alignment: Alignment.center,
+          child: Text(
+            'Retry',
+            style: Theme.of(context).textTheme.labelSmall?.copyWith(
+              color: kErrorColor,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
       );

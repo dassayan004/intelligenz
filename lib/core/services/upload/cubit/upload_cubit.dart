@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intelligenz/core/constants/hive_constants.dart';
@@ -28,69 +29,103 @@ class UploadCubit extends Cubit<UploadState> {
   Future<void> submitUpload(
     UploadFormState formState,
     String analyticHashId,
+    String analyticName,
   ) async {
     if (formState.imagesData.isEmpty) {
       emit(UploadFailure("Please select at least one file."));
       return;
     }
 
-    emit(UploadInProgress());
+    // 1. Save all uploads to Hive with `uploading` status
+    for (final image in formState.imagesData) {
+      final file = File(image.path);
+      final model = await buildUploadModel(
+        file: file,
+        filePath: image.path,
+        analyticHashId: analyticHashId,
+        analyticName: analyticName,
+        description: formState.description,
+        image: image,
+        locations: [],
+      );
 
-    try {
-      for (final image in formState.imagesData) {
-        final file = File(image.path);
-        final model = await buildUploadModel(
-          file: file,
-          filePath: image.path,
-          analyticHashId: analyticHashId,
-          description: formState.description,
-          image: image,
-          locations: [], // Add video locations if available
-        );
+      final key = await _uploadBox.add(model);
 
-        // Save initial model to Hive with `uploading` status
-        final key = await _uploadBox.add(model);
-        print("key: ${key.toString()}");
-        // try {
-        //   // Upload to API
-        //   final response = await _repository.uploadPhoto(
-        //     file: file,
-        //     analyticHashId: analyticHashId,
-        //     description: formState.description,
-        //     location: image.location,
-        //   );
+      // 2. Emit updated list (optional if you're already showing latest)
+      emit(UploadListLoaded(_uploadBox.values.toList()));
 
-        //   // Update Hive entry on success
-        //   final updated = UploadModel(
-        //     filepath: model.filepath,
-        //     filesize: model.filesize,
-        //     fileType: model.fileType,
-        //     analyticHashId: model.analyticHashId,
-        //     description: model.description,
-        //     latitude: model.latitude,
-        //     longitude: model.longitude,
-        //     locations: model.locations,
-        //     startTimestamp: model.startTimestamp,
-        //     endTimestamp: model.endTimestamp,
-        //     timestamp: model.timestamp,
-        //     apiResponse: Map<String, dynamic>.from(response),
-        //     status: UploadStatus.uploaded,
-        //   );
-
-        //   await _uploadBox.put(key, updated);
-        // } catch (e) {
-        //   // Update Hive entry on failure
-        //   final failed = model.copyWith(
-        //     status: UploadStatus.failed,
-        //     apiResponse: {"error": e.toString()},
-        //   );
-        //   await _uploadBox.put(key, failed);
-        // }
-      }
-
-      emit(UploadSuccess());
-    } catch (e) {
-      emit(UploadFailure(e.toString()));
+      // 3. Start background upload
+      _uploadFileInBackground(
+        key,
+        model,
+        file,
+        analyticHashId,
+        image.location,
+        formState.description,
+      );
     }
+
+    // 4. Let user go immediately (no await!)
+    emit(UploadSuccess());
+  }
+
+  void _uploadFileInBackground(
+    int key,
+    UploadModel model,
+    File file,
+    String analyticHashId,
+    LatLong location,
+    String description,
+  ) async {
+    try {
+      final response = await _repository.uploadPhoto(
+        file: file,
+        analyticHashId: analyticHashId,
+        description: description,
+        location: location,
+        timestamp: model.timestamp,
+      );
+
+      final updated = model.copyWith(
+        status: UploadStatus.uploaded,
+        apiResponse: Map<String, dynamic>.from(response),
+      );
+
+      await _uploadBox.put(key, updated);
+    } on DioException catch (e) {
+      final failed = model.copyWith(
+        status: UploadStatus.failed,
+        apiResponse: Map<String, dynamic>.from(e.response?.data ?? {}),
+      );
+      await _uploadBox.put(key, failed);
+    }
+
+    // Optional: re-emit to refresh UI
+    emit(UploadListLoaded(_uploadBox.values.toList()));
+  }
+
+  Future<void> retryUpload(int key) async {
+    final model = _uploadBox.get(key);
+
+    if (model == null || model.status != UploadStatus.failed) return;
+
+    final file = File(model.filepath);
+    final location = LatLong(
+      latitude: model.latitude,
+      longitude: model.longitude,
+    );
+
+    // Update status to uploading
+    final uploading = model.copyWith(status: UploadStatus.uploading);
+    await _uploadBox.put(key, uploading);
+    emit(UploadListLoaded(_uploadBox.values.toList()));
+    _uploadFileInBackground(
+      key,
+      model,
+      file,
+      model.analyticHashId,
+      location,
+      model.description,
+    );
   }
 }

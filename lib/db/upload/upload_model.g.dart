@@ -21,22 +21,23 @@ class UploadModelAdapter extends TypeAdapter<UploadModel> {
       filesize: fields[1] as int,
       fileType: fields[2] as String,
       analyticHashId: fields[3] as String,
-      description: fields[4] as String,
-      latitude: fields[5] as double,
-      longitude: fields[6] as double,
-      locations: (fields[7] as List).cast<LocationEntry>(),
-      startTimestamp: fields[8] as int,
-      endTimestamp: fields[9] as int,
-      timestamp: fields[10] as int,
-      apiResponse: (fields[11] as Map?)?.cast<dynamic, dynamic>(),
-      status: fields[12] as UploadStatus,
+      analyticName: fields[4] as String,
+      description: fields[5] as String,
+      latitude: fields[6] as double,
+      longitude: fields[7] as double,
+      locations: (fields[8] as List).cast<LocationEntry>(),
+      startTimestamp: fields[9] as int,
+      endTimestamp: fields[10] as int,
+      timestamp: fields[11] as int,
+      apiResponse: (fields[12] as Map?)?.cast<dynamic, dynamic>(),
+      status: fields[13] as UploadStatus,
     );
   }
 
   @override
   void write(BinaryWriter writer, UploadModel obj) {
     writer
-      ..writeByte(13)
+      ..writeByte(14)
       ..writeByte(0)
       ..write(obj.filepath)
       ..writeByte(1)
@@ -46,22 +47,24 @@ class UploadModelAdapter extends TypeAdapter<UploadModel> {
       ..writeByte(3)
       ..write(obj.analyticHashId)
       ..writeByte(4)
-      ..write(obj.description)
+      ..write(obj.analyticName)
       ..writeByte(5)
-      ..write(obj.latitude)
+      ..write(obj.description)
       ..writeByte(6)
-      ..write(obj.longitude)
+      ..write(obj.latitude)
       ..writeByte(7)
-      ..write(obj.locations)
+      ..write(obj.longitude)
       ..writeByte(8)
-      ..write(obj.startTimestamp)
+      ..write(obj.locations)
       ..writeByte(9)
-      ..write(obj.endTimestamp)
+      ..write(obj.startTimestamp)
       ..writeByte(10)
-      ..write(obj.timestamp)
+      ..write(obj.endTimestamp)
       ..writeByte(11)
-      ..write(obj.apiResponse)
+      ..write(obj.timestamp)
       ..writeByte(12)
+      ..write(obj.apiResponse)
+      ..writeByte(13)
       ..write(obj.status);
   }
 

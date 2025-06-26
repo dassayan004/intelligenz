@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -9,6 +10,7 @@ class UploadRepository {
     required File file,
     required String analyticHashId,
     required String description,
+    required int timestamp,
     required LatLong location,
   }) async {
     final dio = await DioProvider().client;
@@ -17,10 +19,15 @@ class UploadRepository {
         file.path,
         filename: file.path.split('/').last,
       ),
-      'location': location.toJson().toString(),
+      'location': jsonEncode({
+        'timestamp': timestamp,
+        'lat': location.latitude,
+        'long': location.longitude,
+      }),
       'analytic_hash_id': analyticHashId,
       'description': description,
     });
+
     try {
       final resp = await dio.post('/api/v1/images/upload', data: formData);
       return resp.data;

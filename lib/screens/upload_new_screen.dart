@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -160,16 +162,14 @@ class ActionButtons extends StatelessWidget {
                         .state;
 
                     if (analyticsCubitState is AnalyticsLoaded) {
-                      final uploadCubit = context.read<UploadCubit>();
-
-                      // Await submission
-                      await uploadCubit.submitUpload(
-                        state,
-                        analyticsCubitState.selectedAnalytics.hashId,
+                      unawaited(
+                        context.read<UploadCubit>().submitUpload(
+                          state,
+                          analyticsCubitState.selectedAnalytics.hashId,
+                          analyticsCubitState.selectedAnalytics.analyticsName,
+                        ),
                       );
-                      if (context.mounted) {
-                        context.goNamed(AppRouteName.uploads.name);
-                      }
+                      context.goNamed(AppRouteName.uploads.name);
                     } else {
                       debugPrint(
                         "⚠️ Analytics not loaded. Submission skipped or handled differently.",

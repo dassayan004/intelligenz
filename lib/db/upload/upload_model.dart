@@ -29,30 +29,33 @@ class UploadModel extends HiveObject {
   final String analyticHashId;
 
   @HiveField(4)
-  final String description;
+  final String analyticName;
 
   @HiveField(5)
-  final double latitude;
+  final String description;
 
   @HiveField(6)
-  final double longitude;
+  final double latitude;
 
   @HiveField(7)
-  final List<LocationEntry> locations;
+  final double longitude;
 
   @HiveField(8)
-  final int startTimestamp;
+  final List<LocationEntry> locations;
 
   @HiveField(9)
-  final int endTimestamp;
+  final int startTimestamp;
 
   @HiveField(10)
-  final int timestamp;
+  final int endTimestamp;
 
   @HiveField(11)
-  final Map<dynamic, dynamic>? apiResponse; // Hive limitation: dynamic key map
+  final int timestamp;
 
   @HiveField(12)
+  final Map<dynamic, dynamic>? apiResponse; // Hive limitation: dynamic key map
+
+  @HiveField(13)
   final UploadStatus status;
 
   UploadModel({
@@ -60,6 +63,7 @@ class UploadModel extends HiveObject {
     required this.filesize,
     required this.fileType,
     required this.analyticHashId,
+    required this.analyticName,
     required this.description,
     required this.latitude,
     required this.longitude,
@@ -75,6 +79,7 @@ class UploadModel extends HiveObject {
     int? filesize,
     String? fileType,
     String? analyticHashId,
+    String? analyticName,
     String? description,
     double? latitude,
     double? longitude,
@@ -90,6 +95,7 @@ class UploadModel extends HiveObject {
       filesize: filesize ?? this.filesize,
       fileType: fileType ?? this.fileType,
       analyticHashId: analyticHashId ?? this.analyticHashId,
+      analyticName: analyticName ?? this.analyticName,
       description: description ?? this.description,
       latitude: latitude ?? this.latitude,
       longitude: longitude ?? this.longitude,

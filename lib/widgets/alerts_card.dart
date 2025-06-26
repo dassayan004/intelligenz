@@ -99,13 +99,13 @@ Widget _buildAlertCard(
 }) {
   if (alerts.isEmpty) return const Text("No recent alerts found.");
 
-  alerts.sort((a, b) {
-    final aTs = int.tryParse(a.timestamp ?? '0') ?? 0;
-    final bTs = int.tryParse(b.timestamp ?? '0') ?? 0;
-    return bTs.compareTo(aTs); // Descending
-  });
+  // alerts.sort((a, b) {
+  //   final aTs = int.tryParse(a.timestamp ?? '0') ?? 0;
+  //   final bTs = int.tryParse(b.timestamp ?? '0') ?? 0;
+  //   return bTs.compareTo(aTs); // Descending
+  // });
 
-  final topAlerts = alerts.take(3).toList();
+  // final topAlerts = alerts.take(3).toList();
 
   return Card(
     elevation: 0,
@@ -119,10 +119,10 @@ Widget _buildAlertCard(
         children: [
           Text("Today", style: Theme.of(context).textTheme.titleLarge),
           const SizedBox(height: 16),
-          ...topAlerts.asMap().entries.map(
+          ...alerts.asMap().entries.map(
             (entry) => Padding(
               padding: EdgeInsets.only(
-                bottom: entry.key == topAlerts.length - 1 ? 0 : 16,
+                bottom: entry.key == alerts.length - 1 ? 0 : 16,
               ),
               child: MouseRegion(
                 cursor: SystemMouseCursors.click,
