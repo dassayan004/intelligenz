@@ -35,7 +35,7 @@ class _UploadScreenState extends State<UploadScreen> {
       body: ValueListenableBuilder(
         valueListenable: Hive.box<UploadModel>(uploadBox).listenable(),
         builder: (context, Box<UploadModel> box, _) {
-          final uploads = box.values.toList();
+          final uploads = box.values.toList().reversed.toList();
           if (uploads.isEmpty) {
             return const Center(child: Text("No uploads found."));
           }
@@ -193,7 +193,7 @@ class RecentUploadRow extends StatelessWidget {
               ),
               const SizedBox(height: 2),
               Text(
-                'ANPR', // or `upload.analyticHashId ?? 'Traffic'`
+                upload.analyticName, // or `upload.analyticHashId ?? 'Traffic'`
                 style: theme.textTheme.bodyMedium?.copyWith(
                   color: kSkyBlue300,
                   fontWeight: FontWeight.w600,

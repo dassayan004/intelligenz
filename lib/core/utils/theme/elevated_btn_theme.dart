@@ -14,7 +14,7 @@ class TElevatedButtonTheme {
       backgroundColor: kButtonColor,
       foregroundColor: kButtonTextColor,
       disabledForegroundColor: kButtonTextColor,
-      disabledBackgroundColor: kSkyBlue300,
+      disabledBackgroundColor: kNeutralGrey700,
       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 32),
       textStyle: GoogleFonts.dmSans(
         fontSize: SizeConstants.size500,
@@ -32,7 +32,7 @@ class TElevatedButtonTheme {
       backgroundColor: kSkyBlue900,
       foregroundColor: kSkyBlue300,
       disabledForegroundColor: kButtonTextColor,
-      disabledBackgroundColor: kSkyBlue300,
+      disabledBackgroundColor: kNeutralGrey700,
       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 32),
       textStyle: GoogleFonts.dmSans(
         fontSize: SizeConstants.size500,
@@ -48,7 +48,7 @@ class TElevatedButtonTheme {
     backgroundColor: kSkyBlue1000,
     foregroundColor: kSkyBlue300,
     disabledForegroundColor: kButtonTextColor,
-    disabledBackgroundColor: kSkyBlue300,
+    disabledBackgroundColor: kNeutralGrey700,
     side: const BorderSide(color: kSkyBlue300),
     padding: const EdgeInsets.symmetric(vertical: 9, horizontal: 15),
     textStyle: GoogleFonts.dmSans(

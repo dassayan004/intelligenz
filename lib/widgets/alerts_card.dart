@@ -106,41 +106,54 @@ Widget _buildAlertCard(
   // });
 
   // final topAlerts = alerts.take(3).toList();
+  final Map<String, List<AlertData>> groupedAlerts = {};
 
-  return Card(
-    elevation: 0,
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-    color: kNeutralWhite,
-    child: Padding(
-      padding: const EdgeInsets.all(12),
+  for (final alert in alerts) {
+    final label = _formatAlertDateGroup(alert.timestamp);
+    groupedAlerts.putIfAbsent(label, () => []).add(alert);
+  }
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: groupedAlerts.entries.map((entry) {
+      final label = entry.key;
+      final alertList = entry.value;
 
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text("Today", style: Theme.of(context).textTheme.titleLarge),
-          const SizedBox(height: 16),
-          ...alerts.asMap().entries.map(
-            (entry) => Padding(
-              padding: EdgeInsets.only(
-                bottom: entry.key == alerts.length - 1 ? 0 : 16,
-              ),
-              child: MouseRegion(
-                cursor: SystemMouseCursors.click,
-                child: GestureDetector(
-                  onTap: () {
-                    context.pushNamed(
-                      AppRouteName.alertDetails.name,
-                      extra: entry.value,
-                    );
-                  },
-                  child: RecentAlertRow(alert: entry.value),
+      return Card(
+        elevation: 0,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        color: kNeutralWhite,
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(label, style: Theme.of(context).textTheme.titleLarge),
+              const SizedBox(height: 16),
+              ...alertList.asMap().entries.map(
+                (entry) => Padding(
+                  padding: EdgeInsets.only(
+                    bottom: entry.key == alertList.length - 1 ? 0 : 16,
+                  ),
+                  child: MouseRegion(
+                    cursor: SystemMouseCursors.click,
+                    child: GestureDetector(
+                      onTap: () {
+                        context.pushNamed(
+                          AppRouteName.alertDetails.name,
+                          extra: entry.value,
+                        );
+                      },
+                      child: RecentAlertRow(alert: entry.value),
+                    ),
+                  ),
                 ),
               ),
-            ),
+            ],
           ),
-        ],
-      ),
-    ),
+        ),
+      );
+    }).toList(),
   );
 }
 
@@ -308,4 +321,35 @@ class _RecentAlertSkeleton extends StatelessWidget {
       ],
     );
   }
+}
+
+String _formatAlertDateGroup(String? timestamp) {
+  if (timestamp == null) return '';
+
+  final ts = int.tryParse(timestamp) ?? 0;
+  if (ts == 0) return '';
+
+  final alertDate = DateTime.fromMillisecondsSinceEpoch(ts * 1000);
+  final now = DateTime.now();
+
+  final isToday =
+      alertDate.year == now.year &&
+      alertDate.month == now.month &&
+      alertDate.day == now.day;
+
+  final isYesterday =
+      alertDate.year == now.year &&
+      alertDate.month == now.month &&
+      alertDate.day == now.day - 1;
+
+  if (isToday) return 'Today';
+  if (isYesterday) return 'Yesterday';
+
+  return _ddmmyy(alertDate); // e.g. 16/04/24
+}
+
+String _ddmmyy(DateTime dt) {
+  return "${dt.day.toString().padLeft(2, '0')}/"
+      "${dt.month.toString().padLeft(2, '0')}/"
+      "${dt.year.toString().substring(2)}";
 }

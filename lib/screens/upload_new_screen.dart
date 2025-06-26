@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intelligenz/core/constants/color_constant.dart';
 import 'package:intelligenz/core/constants/router_constant.dart';
 import 'package:intelligenz/core/constants/size_constant.dart';
 import 'package:intelligenz/core/services/analytics/cubit/analytics_cubit.dart';
@@ -82,6 +83,12 @@ class MediaButtonsRow extends StatelessWidget {
           child: OutlinedButton.icon(
             icon: const Icon(Icons.videocam, size: 24),
             label: const Text('Video'),
+            style: isLoading
+                ? OutlinedButton.styleFrom(
+                    side: const BorderSide(color: kNeutralGrey700),
+                  )
+                : null,
+
             onPressed: isLoading
                 ? null
                 : () {
@@ -94,6 +101,11 @@ class MediaButtonsRow extends StatelessWidget {
           child: OutlinedButton.icon(
             icon: const Icon(Icons.camera_alt_rounded, size: 24),
             label: const Text('Image'),
+            style: isLoading
+                ? OutlinedButton.styleFrom(
+                    side: const BorderSide(color: kNeutralGrey700),
+                  )
+                : null,
             onPressed: isLoading
                 ? null
                 : () async {

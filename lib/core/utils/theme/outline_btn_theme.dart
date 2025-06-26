@@ -13,7 +13,8 @@ class TOutlineButtonTheme {
           backgroundColor: kSkyBlue1000,
           foregroundColor: kSkyBlue300,
           disabledForegroundColor: kButtonTextColor,
-          disabledBackgroundColor: kSkyBlue300,
+          disabledBackgroundColor: kNeutralGrey700,
+
           side: const BorderSide(color: kSkyBlue300),
           padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 32),
           textStyle: GoogleFonts.dmSans(
