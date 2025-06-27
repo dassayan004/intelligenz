@@ -341,6 +341,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  freestyle_speed_dial:
+    dependency: "direct main"
+    description:
+      name: freestyle_speed_dial
+      sha256: cd3d32fa492196e4d3d4e98e72ebc26903f953c1157b9a511130ae3cb01dc1b1
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.1+2"
   frontend_server_client:
     dependency: transitive
     description:

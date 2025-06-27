@@ -37,6 +37,7 @@ class TAppTheme {
   static ThemeData lightTheme = ThemeData(
     useMaterial3: true,
     brightness: Brightness.light,
+    colorScheme: ColorScheme.light(primary: kSkyBlue300),
     primaryColor: klPrimaryColor,
     scaffoldBackgroundColor: klBackgroundColor,
     textTheme: TTextTheme.lightTextTheme,

@@ -1,11 +1,16 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:freestyle_speed_dial/freestyle_speed_dial.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intelligenz/core/constants/asset_path.dart';
 import 'package:intelligenz/core/constants/color_constant.dart';
 import 'package:intelligenz/core/constants/router_constant.dart';
+import 'package:intelligenz/core/constants/size_constant.dart';
 import 'package:intelligenz/core/services/navigation/cubit/navigation_cubit.dart';
 
 class MainScreen extends StatelessWidget {
@@ -18,6 +23,7 @@ class MainScreen extends StatelessWidget {
     final currentUri = GoRouterState.of(context).uri.toString();
     context.read<NavigationCubit>().syncWithRoute(currentUri);
 
+    late VoidCallback closeDial;
     return Scaffold(
       body: screen,
       floatingActionButton: Transform.translate(
@@ -29,34 +35,133 @@ class MainScreen extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             SizedBox(
-              width: 70,
               height: 70,
-              child: FloatingActionButton(
-                onPressed: () async {
-                  final picker = ImagePicker();
-                  final XFile? image = await picker.pickImage(
-                    source: ImageSource.camera,
+              width: 70,
+              child: SpeedDialBuilder(
+                buttonBuilder: (context, isActive, toggle) {
+                  closeDial = toggle;
+                  return FloatingActionButton(
+                    foregroundColor: Colors.white,
+                    elevation: 0,
+
+                    shape: const CircleBorder(),
+                    onPressed: toggle,
+                    backgroundColor: isActive ? kSkyBlue300 : kButtonColor,
+                    child: AnimatedRotation(
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.easeInOutCubicEmphasized,
+                      turns: isActive ? 1 : 0,
+                      child: isActive
+                          ? const Icon(
+                              Icons.close,
+                              color: kNeutralWhite,
+                              size: 35,
+                            )
+                          : const Icon(
+                              Icons.camera_alt,
+                              color: kNeutralWhite,
+                              size: 35,
+                            ),
+                    ),
+                  );
+                },
+                itemBuilder: (context, Widget item, i, animation) {
+                  const radius = 1.3; // Adjust for spacing
+                  final totalItems = 2; // Or items.length
+
+                  // Start at 60° and spread to 120°
+                  final startAngle = pi / 3; // 60°
+                  final sweepAngle = pi / 3; // Total arc of 60°
+                  final angle =
+                      startAngle + (sweepAngle / (totalItems - 1)) * i;
+
+                  final targetOffset = Offset(
+                    radius * cos(angle),
+                    -radius * sin(angle),
                   );
 
-                  if (!context.mounted) return;
+                  final offsetAnimation = Tween<Offset>(
+                    begin: Offset.zero,
+                    end: targetOffset,
+                  ).animate(animation);
 
-                  if (image != null) {
-                    context.pushNamed(
-                      AppRouteName.uploadNewItems.name,
-                      extra: image.path,
-                    );
-                    debugPrint('Image tulche: ${image.path}');
-                  }
+                  return SlideTransition(
+                    position: offsetAnimation,
+                    child: FadeTransition(opacity: animation, child: item),
+                  );
                 },
+                items: [
+                  FloatingActionButton.extended(
+                    onPressed: () async {
+                      closeDial();
+                      final picker = ImagePicker();
 
-                backgroundColor: kButtonColor,
-                elevation: 0,
-                shape: const CircleBorder(),
-                child: const Icon(
-                  Icons.camera_alt,
-                  color: Colors.white,
-                  size: 35,
-                ),
+                      final XFile? video = await picker.pickVideo(
+                        source: ImageSource.camera,
+                      );
+                      if (!context.mounted) return;
+
+                      if (video != null) {
+                        // context.pushNamed(
+                        //   AppRouteName.uploadNewItems.name,
+                        //   extra: video.path,
+                        // );
+
+                        debugPrint('video tulche: ${video.path}');
+                      }
+                    },
+                    label: Text(
+                      'Video',
+                      style: GoogleFonts.dmSans(
+                        fontSize: SizeConstants.size500,
+                        fontWeight: FontWeight.w700,
+                        color: kSkyBlue300,
+                      ),
+                    ),
+
+                    backgroundColor: kNeutralWhite,
+                    icon: const Icon(
+                      Icons.videocam,
+                      size: 24,
+                      color: kSkyBlue300,
+                    ),
+                  ),
+                  FloatingActionButton.extended(
+                    onPressed: () async {
+                      closeDial();
+                      final picker = ImagePicker();
+
+                      final XFile? image = await picker.pickImage(
+                        source: ImageSource.camera,
+                      );
+                      if (!context.mounted) return;
+
+                      if (image != null) {
+                        context.pushNamed(
+                          AppRouteName.uploadNewItems.name,
+                          extra: image.path,
+                        );
+
+                        debugPrint('Image tulche: ${image.path}');
+                      }
+                    },
+
+                    label: Text(
+                      'Image',
+                      style: GoogleFonts.dmSans(
+                        fontSize: SizeConstants.size500,
+                        fontWeight: FontWeight.w700,
+                        color: kSkyBlue300,
+                      ),
+                    ),
+                    backgroundColor: kNeutralWhite,
+                    icon: const Icon(
+                      Icons.camera_alt_rounded,
+                      size: 24,
+                      color: kSkyBlue300,
+                    ),
+                  ),
+                ],
               ),
             ),
             const SizedBox(height: 4),

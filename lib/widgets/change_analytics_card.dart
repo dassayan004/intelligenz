@@ -37,6 +37,8 @@ class _ChangeAnalyticsCardState extends State<ChangeAnalyticsCard> {
         content: Text(
           'Default analytics changed to "${analytic.analyticName}"',
         ),
+        behavior: SnackBarBehavior.floating,
+
         duration: const Duration(seconds: 2),
         backgroundColor: kSuccessColor,
       ),
