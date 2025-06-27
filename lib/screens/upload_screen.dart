@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intelligenz/core/constants/hive_constants.dart';
+import 'package:intelligenz/core/services/upload/cubit/upload_state.dart';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart' as p;
 import 'package:flutter/material.dart';
@@ -274,21 +275,38 @@ class RecentUploadRow extends StatelessWidget {
 }
 
 Widget _buildStatusIndicator(BuildContext context, UploadModel upload) {
+  final state = context.watch<UploadCubit>().state;
+  int progress = 0;
+
+  if (state is UploadListLoaded) {
+    final key = upload.key;
+    if (key != null) {
+      progress = state.progressMap[key] ?? 0;
+      // print('Progress for $key → $progress%');
+    }
+  }
   switch (upload.status) {
     case UploadStatus.uploading:
-      return SizedBox(
-        width: 48,
-        height: 48,
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            CircularProgressIndicator(
+      return Stack(
+        alignment: Alignment.center,
+        children: [
+          SizedBox(
+            width: 48,
+            height: 48,
+            child: CircularProgressIndicator(
+              value: progress / 100,
               strokeWidth: 4,
               backgroundColor: kNeutralGrey1000,
               valueColor: const AlwaysStoppedAnimation<Color>(kSunsetOrange500),
             ),
-          ],
-        ),
+          ),
+          Text(
+            '$progress%',
+            style: Theme.of(
+              context,
+            ).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.bold),
+          ),
+        ],
       );
 
     case UploadStatus.uploaded:

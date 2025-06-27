@@ -12,6 +12,7 @@ class UploadRepository {
     required String description,
     required int timestamp,
     required LatLong location,
+    required void Function(int sent, int total) onSendProgress,
   }) async {
     final dio = await DioProvider().client;
     final formData = FormData.fromMap({
@@ -29,7 +30,11 @@ class UploadRepository {
     });
 
     try {
-      final resp = await dio.post('/api/v1/images/upload', data: formData);
+      final resp = await dio.post(
+        '/api/v1/images/upload',
+        data: formData,
+        onSendProgress: onSendProgress,
+      );
       return resp.data;
     } catch (e) {
       rethrow;

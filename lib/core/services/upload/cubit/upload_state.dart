@@ -16,11 +16,12 @@ class UploadSuccess extends UploadState {}
 
 class UploadListLoaded extends UploadState {
   final List<UploadModel> uploads;
+  final Map<int, int> progressMap; // key = upload Hive key, value = % uploaded
 
-  const UploadListLoaded(this.uploads);
+  const UploadListLoaded(this.uploads, {this.progressMap = const {}});
 
   @override
-  List<Object> get props => [uploads];
+  List<Object> get props => [uploads, progressMap];
 }
 
 class UploadFailure extends UploadState {

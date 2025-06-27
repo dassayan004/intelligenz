@@ -15,16 +15,16 @@ class UploadCubit extends Cubit<UploadState> {
   final UploadRepository _repository;
 
   UploadCubit(this._repository) : super(UploadInitial());
+
   final Box<UploadModel> _uploadBox = Hive.box<UploadModel>(uploadBox);
+  final Map<int, int> _progressMap = {}; // ✅ Persisted across uploads
 
   Future<void> fetchAllUploads() async {
     final uploads = _uploadBox.values.toList();
-    emit(UploadListLoaded(uploads));
+    emit(UploadListLoaded(uploads, progressMap: _progressMap));
   }
 
-  UploadModel? findUploadById(int key) {
-    return _uploadBox.get(key);
-  }
+  UploadModel? findUploadById(int key) => _uploadBox.get(key);
 
   Future<void> submitUpload(
     UploadFormState formState,
@@ -51,10 +51,10 @@ class UploadCubit extends Cubit<UploadState> {
 
       final key = await _uploadBox.add(model);
 
-      // 2. Emit updated list (optional if you're already showing latest)
-      emit(UploadListLoaded(_uploadBox.values.toList()));
+      emit(
+        UploadListLoaded(_uploadBox.values.toList(), progressMap: _progressMap),
+      );
 
-      // 3. Start background upload
       _uploadFileInBackground(
         key,
         model,
@@ -65,7 +65,6 @@ class UploadCubit extends Cubit<UploadState> {
       );
     }
 
-    // 4. Let user go immediately (no await!)
     emit(UploadSuccess());
   }
 
@@ -84,6 +83,21 @@ class UploadCubit extends Cubit<UploadState> {
         description: description,
         location: location,
         timestamp: model.timestamp,
+        onSendProgress: (sent, total) {
+          if (total == 0) return;
+          final progress = (sent * 100 ~/ total);
+
+          if (_progressMap[key] != progress) {
+            _progressMap[key] = progress;
+            emit(
+              UploadListLoaded(
+                List<UploadModel>.from(_uploadBox.values.toList()),
+                progressMap: Map<int, int>.from(_progressMap),
+              ),
+            );
+            // print("Progress for $key → $progress%");
+          }
+        },
       );
 
       final updated = model.copyWith(
@@ -100,13 +114,13 @@ class UploadCubit extends Cubit<UploadState> {
       await _uploadBox.put(key, failed);
     }
 
-    // Optional: re-emit to refresh UI
-    emit(UploadListLoaded(_uploadBox.values.toList()));
+    emit(
+      UploadListLoaded(_uploadBox.values.toList(), progressMap: _progressMap),
+    );
   }
 
   Future<void> retryUpload(int key) async {
     final model = _uploadBox.get(key);
-
     if (model == null || model.status != UploadStatus.failed) return;
 
     final file = File(model.filepath);
@@ -115,10 +129,13 @@ class UploadCubit extends Cubit<UploadState> {
       longitude: model.longitude,
     );
 
-    // Update status to uploading
     final uploading = model.copyWith(status: UploadStatus.uploading);
     await _uploadBox.put(key, uploading);
-    emit(UploadListLoaded(_uploadBox.values.toList()));
+
+    emit(
+      UploadListLoaded(_uploadBox.values.toList(), progressMap: _progressMap),
+    );
+
     _uploadFileInBackground(
       key,
       model,
