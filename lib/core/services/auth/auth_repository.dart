@@ -13,8 +13,16 @@ class AuthRepository {
     await _metaBox.put(apiUrlKey, url);
   }
 
+  Future<void> setVideoLocationInterval(int timer) async {
+    await _metaBox.put(videoIntervalKey, timer.toString());
+  }
+
   Future<String?> getUrl() async {
     return _metaBox.get(apiUrlKey);
+  }
+
+  Future<int> getVideoLocationInterval() async {
+    return int.parse(_metaBox.get(videoIntervalKey) ?? '');
   }
 
   Future<TenantUserLogin> login(String email, String password) async {
@@ -70,6 +78,7 @@ class AuthRepository {
   }
 
   Future<void> logout() async {
+    await _metaBox.delete(videoIntervalKey);
     await _metaBox.delete(apiUrlKey);
     await _authBox.delete(authKey);
   }

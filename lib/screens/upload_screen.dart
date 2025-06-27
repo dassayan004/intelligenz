@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intelligenz/core/constants/hive_constants.dart';
+import 'package:intl/intl.dart';
 import 'package:path/path.dart' as p;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -108,35 +109,47 @@ Widget _buildUploadCard(
   List<UploadModel> uploads, {
   required BuildContext context,
 }) {
-  return Card(
-    elevation: 0,
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-    color: kNeutralWhite,
-    child: Padding(
-      padding: const EdgeInsets.all(12),
+  final Map<String, List<UploadModel>> groupedUploads = {};
+  for (final upld in uploads) {
+    final label = _formatAlertDateGroup(upld.timestamp.toString());
+    groupedUploads.putIfAbsent(label, () => []).add(upld);
+  }
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: groupedUploads.entries.map((entry) {
+      final label = entry.key;
+      final uploads = entry.value;
 
-      child: Column(
-        children: uploads
-            .asMap()
-            .entries
-            .map(
-              (entry) => Padding(
-                padding: EdgeInsets.only(
-                  bottom: entry.key == uploads.length - 1 ? 0 : 16,
-                ),
-                child: MouseRegion(
-                  cursor: SystemMouseCursors.click,
-                  child: GestureDetector(
-                    onTap: () =>
-                        showUploadDetailsModal(context, uploads[entry.key]),
-                    child: RecentUploadRow(upload: entry.value),
+      return Card(
+        elevation: 0,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        color: kNeutralWhite,
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(label, style: Theme.of(context).textTheme.titleLarge),
+              const SizedBox(height: 16),
+              ...uploads.asMap().entries.map(
+                (entry) => Padding(
+                  padding: EdgeInsets.only(
+                    bottom: entry.key == uploads.length - 1 ? 0 : 16,
+                  ),
+                  child: MouseRegion(
+                    cursor: SystemMouseCursors.click,
+                    child: GestureDetector(
+                      onTap: () => showUploadDetailsModal(context, entry.value),
+                      child: RecentUploadRow(upload: entry.value),
+                    ),
                   ),
                 ),
               ),
-            )
-            .toList(),
-      ),
-    ),
+            ],
+          ),
+        ),
+      );
+    }).toList(),
   );
 }
 
@@ -320,4 +333,29 @@ Widget _buildStatusIndicator(BuildContext context, UploadModel upload) {
         ),
       );
   }
+}
+
+String _formatAlertDateGroup(String? timestamp) {
+  if (timestamp == null) return '';
+
+  final ts = int.tryParse(timestamp) ?? 0;
+  if (ts == 0) return '';
+
+  final alertDate = DateTime.fromMillisecondsSinceEpoch(ts * 1000);
+  final now = DateTime.now();
+
+  final isToday =
+      alertDate.year == now.year &&
+      alertDate.month == now.month &&
+      alertDate.day == now.day;
+
+  final isYesterday =
+      alertDate.year == now.year &&
+      alertDate.month == now.month &&
+      alertDate.day == now.day - 1;
+
+  if (isToday) return 'Today';
+  if (isYesterday) return 'Yesterday';
+
+  return DateFormat('dd MMM yyyy').format(alertDate);
 }

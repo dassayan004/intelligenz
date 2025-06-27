@@ -7,6 +7,7 @@ import 'package:intelligenz/core/services/analytics/cubit/analytics_cubit.dart';
 import 'package:intelligenz/core/services/auth/cubit/auth_cubit.dart';
 import 'package:intelligenz/widgets/change_analytics_card.dart';
 import 'package:intelligenz/widgets/reusable_app_bar.dart';
+import 'package:intelligenz/widgets/videoIntervalDropdown.dart';
 
 class SettingScreen extends StatelessWidget {
   const SettingScreen({super.key});
@@ -26,8 +27,9 @@ class SettingScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     ChangeAnalyticsCard(),
-                    SizedBox(height: 48),
-
+                    SizedBox(height: 24),
+                    VideoIntervalDropdown(),
+                    const SizedBox(height: 24),
                     Row(
                       children: [
                         Text(
@@ -72,7 +74,7 @@ class SettingScreen extends StatelessWidget {
                         const Icon(Icons.dark_mode, size: 18),
                       ],
                     ),
-                    const SizedBox(height: 48),
+                    const SizedBox(height: 24),
                     TextButton.icon(
                       onPressed: () async {
                         final authCubit = context.read<AuthCubit>();

@@ -10,6 +10,7 @@ import 'package:intelligenz/db/analytics/analytics_model.dart';
 
 import 'package:intelligenz/models/alert_response.dart';
 import 'package:intelligenz/widgets/alert_thumb.dart';
+import 'package:intl/intl.dart';
 import 'package:shimmer/shimmer.dart';
 
 class AlertsCard extends StatefulWidget {
@@ -345,11 +346,5 @@ String _formatAlertDateGroup(String? timestamp) {
   if (isToday) return 'Today';
   if (isYesterday) return 'Yesterday';
 
-  return _ddmmyy(alertDate); // e.g. 16/04/24
-}
-
-String _ddmmyy(DateTime dt) {
-  return "${dt.day.toString().padLeft(2, '0')}/"
-      "${dt.month.toString().padLeft(2, '0')}/"
-      "${dt.year.toString().substring(2)}";
+  return DateFormat('dd MMM yyyy').format(alertDate);
 }

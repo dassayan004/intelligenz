@@ -11,6 +11,12 @@ class AuthCubit extends Cubit<AuthState> {
   AuthCubit(this.authRepository) : super(AuthInitial()) {
     checkAuthStatus();
   }
+  Future<void> setVideoLocationInterval(int timer) =>
+      authRepository.setVideoLocationInterval(timer);
+
+  Future<int?> getVideoLocationInterval() async {
+    return authRepository.getVideoLocationInterval();
+  }
 
   Future<void> checkAuthStatus() async {
     emit(AuthLoading());
